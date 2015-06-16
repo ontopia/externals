@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>net.ontopia</groupId>
+		<artifactId>super-pom</artifactId>
+		<version>1</version>
+	</parent>
+	
+	<groupId>net.ontopia</groupId>
+	<artifactId>cxtm-tests</artifactId>
+	<version>1</version>
+	<packaging>pom</packaging>
+	
+	<name>CXTM tests</name>
+	<description>The CXTM Test Suite provides a suite of test data for validating implementations of ISO 13250 Topic Maps using the new ISO 13250-4 standard for topic map canonicalization.</description>
+	<url>http://cxtm-tests.sourceforge.net/</url>
+	
+	<licenses>
+		<license>
+			<name>Public Domain</name>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+	
+	<scm>
+		<url>https://github.com/ontopia/externals</url>
+		<connection>scm:git:git://github.com/ontopia/externals.git</connection>
+		<developerConnection>scm:git:git://github.com/ontopia/externals.git</developerConnection>
+	</scm>
+	
+	<developers>
+		<developer>
+			<id>cxtm</id>
+			<url>http://cxtm-tests.sourceforge.net/</url>
+			<name>The CXTM team</name>
+		</developer>
+	</developers>
+	
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.sonatype.plugins</groupId>
+				<artifactId>nexus-staging-maven-plugin</artifactId>
+				<version>1.6.5</version>
+				<extensions>true</extensions>
+				<configuration>
+					<serverId>ossrh</serverId>
+					<nexusUrl>https://oss.sonatype.org/</nexusUrl>
+					<autoReleaseAfterClose>true</autoReleaseAfterClose>
+				</configuration>
+			</plugin>			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-assembly-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>create-distribution</id>
+						<phase>package</phase>
+						<goals>
+							<goal>single</goal>
+						</goals>
+						<configuration>
+							<finalName>cxtm-tests</finalName>
+							<descriptors>
+								<descriptor>assembly/assembly.xml</descriptor>
+							</descriptors>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>	
+</project>

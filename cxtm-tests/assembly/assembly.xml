@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<assembly>
+	<formats>
+		<format>zip</format>
+	</formats>
+	<includeBaseDirectory>false</includeBaseDirectory>
+	<fileSets>
+		<fileSet>
+			<outputDirectory>/ctm</outputDirectory>
+			<directory>assembly/resources/ctm</directory>
+		</fileSet>
+		<fileSet>
+			<outputDirectory>/jtm</outputDirectory>
+			<directory>assembly/resources/jtm</directory>
+		</fileSet>
+		<fileSet>
+			<outputDirectory>/tmxml</outputDirectory>
+			<directory>assembly/resources/tmxml</directory>
+		</fileSet>
+		<fileSet>
+			<outputDirectory>/xtm2</outputDirectory>
+			<directory>assembly/resources/xtm2</directory>
+		</fileSet>
+		<fileSet>
+			<outputDirectory>/xtm21</outputDirectory>
+			<directory>assembly/resources/xtm21</directory>
+		</fileSet>
+	</fileSets>
+</assembly>

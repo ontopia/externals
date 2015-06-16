@@ -1,0 +1,19 @@
+=============
+Missing Tests
+=============
+
+Valid tests
+-----------
+* More nested topics tests, like person: [-"John" [-"Homepage"]: http://...]
+* IRI schemes != http
+* More template tests
+
+Invalid tests
+-------------
+* Invalid topic ids
+* Merging in an unknown Topic Maps syntax
+* Including something != CTM
+* Variant scope == name scope
+* Duplicate template names
+* Infinite template loops?
+

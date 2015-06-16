@@ -1,0 +1,7 @@
+=======================
+Status of the CTM tests
+=======================
+
+The tests use the CTM draft dtd. 2009-03-xx and the CXTM draft
+of the same date.
+
