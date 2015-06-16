@@ -19,3 +19,9 @@ uses a copy the 2.0.2 version of these test cases. There were **no** modificatio
 
 *To be removed when TMAPI is added to maven central*
 
+### CXTM Tests
+
+[The CXTM project](http://cxtm-tests.sourceforge.net/) provides a suite of tests for Topic Maps implementations, based around the various 
+Topic Maps syntaxes. Automated download of the test data was replaced with maven artifact, and reproduced into this project for release 
+to maven central. There were **no** modifications made to the actual test cases.
+
