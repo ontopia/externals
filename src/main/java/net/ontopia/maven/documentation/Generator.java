@@ -71,7 +71,7 @@ public class Generator {
 		MutableDataHolder options = PegdownOptionsAdapter.flexmarkOptions(
 			Extensions.ALL & ~Extensions.HARDWRAPS 
 				| Extensions.EXTANCHORLINKS | Extensions.SMARTS | Extensions.DEFINITIONS
-				| Extensions.EXTANCHORLINKS | Extensions.FOOTNOTES | Extensions.TOC
+				| Extensions.FOOTNOTES | Extensions.TOC
 		).toMutable();
 
 		options.set(TablesExtension.CLASS_NAME, "table");
