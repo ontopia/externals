@@ -93,6 +93,7 @@ public class Generator {
 		for (File mdFile : markdownFiles) {
 			convert(mdFile, getMarkdownTarget(mdFile));
 		}
+		log.info("Converted " + markdownFiles.size() + " markdown documents");
 	}
 
 	private void convert(File source, File target) {
@@ -106,19 +107,12 @@ public class Generator {
 
 				c.put("body", renderer.render(document));
 				c.put("title", findTitle(document));
-//				c.put("subtitle", converter.getSubtitle());
 				c.put("root", getRelativeToOutput(target));
 				c.put("inputFile", source);
 
-//				if (converter.getToc().isEmpty() || markdownContent.contains("<notoc/>")) {
-//					c.put("toc", false);
-//				} else {
-//					c.put("toc", converter.getToc());
-//				}
-				
 				template.merge(c, writer);
 				
-				log.info("Converted " + source.getName());
+				log.debug("Converted " + source.getName());
 			}
 		} catch (IOException ioe) {
 			throw new RuntimeException("Could not convert " + source, ioe);
