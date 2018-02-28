@@ -30,6 +30,7 @@ import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.runtime.RuntimeConstants;
 import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
 import org.apache.velocity.runtime.resource.loader.FileResourceLoader;
 
@@ -86,6 +87,10 @@ public class Generator {
 		p.put("file.resource.loader.path", templateFile.getParent());
 		
 		VelocityEngine velocity = new VelocityEngine(p);
+
+		velocity.setProperty(RuntimeConstants.RUNTIME_LOG_LOGSYSTEM_CLASS, "org.apache.velocity.runtime.log.Log4JLogChute");
+		velocity.setProperty("runtime.log.logsystem.log4j.logger","velocity");
+
 		template = velocity.getTemplate(templateFile.getName(), "utf-8");		
 	}
 
@@ -102,8 +107,6 @@ public class Generator {
 			
 			try (PrintWriter writer = new PrintWriter(new FileOutputStream(target))) {
 				VelocityContext c = new VelocityContext(conversionData);
-
-				// todo: stop/capture velocity logging
 
 				c.put("body", renderer.render(document));
 				c.put("title", findTitle(document));
