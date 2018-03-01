@@ -2,13 +2,10 @@
 package net.ontopia.maven.documentation;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map;
+import java.util.Collections;
 import java.util.stream.Collectors;
-import org.apache.commons.io.FileUtils;
-import org.apache.commons.io.filefilter.DirectoryFileFilter;
-import org.apache.commons.io.filefilter.IOFileFilter;
-import org.apache.commons.io.filefilter.SuffixFileFilter;
 import org.apache.maven.plugin.AbstractMojo;
 import org.apache.maven.plugin.MojoExecutionException;
 import org.apache.maven.plugin.MojoFailureException;
@@ -17,6 +14,7 @@ import org.apache.maven.plugins.annotations.LifecyclePhase;
 import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.project.MavenProject;
+import org.codehaus.plexus.util.DirectoryScanner;
 
 @Mojo(name = "generate", defaultPhase = LifecyclePhase.SITE)
 public class GenerateMojo extends AbstractMojo {
@@ -33,28 +31,30 @@ public class GenerateMojo extends AbstractMojo {
 	@Parameter( property = "generate.skip", defaultValue = "false" )
 	private boolean skip = false;
 	
-	@Parameter( property = "generate.debug", defaultValue = "false" )
-	private boolean debug = false;
+	@Parameter( property = "generate.includes", defaultValue = "**/*.md" )
+	private String[] includes;
+	
+	@Parameter( property = "generate.excludes")
+	private String[] excludes;
+
+	@Parameter( property = "generate.resources", defaultValue = "${project.basedir}/src/site/resources" )
+	private File[] resources;
+	
+	@Parameter( property = "generate.resourceIncludes", defaultValue = "**/*" )
+	private String[] resourceIncludes;
+	
+	@Parameter( property = "generate.resourceExcludes", defaultValue = "**/.*")
+	private String[] resourceExcludes;
 		
 	@Parameter( defaultValue = "${project}" )
 	private MavenProject project;
 	
-	@Parameter
-	private Map<String, String> properties;
-	
-	private Log log;
-	
 	@Override
 	public void execute() throws MojoExecutionException, MojoFailureException {
-		log = getLog();
+		Log log = getLog();
 		
 		if (skip) {
 			log.info("Skipping execution");
-			return;
-		}
-		
-		if (!rootDirectory.exists()) {
-			log.info("Input directory " + rootDirectory + " does not exist, skipping execution");
 			return;
 		}
 		
@@ -67,31 +67,22 @@ public class GenerateMojo extends AbstractMojo {
 		Generator generator = new Generator(project, log);
 		generator.setOutputDir(outDirectory);
 		generator.setTemplate(template);
-		generator.addResourceFiles(collectResources());
-		
-		generator.addMarkdownFiles(
-			FileUtils.listFiles(rootDirectory, new SuffixFileFilter(".md"), DirectoryFileFilter.INSTANCE).parallelStream().filter((file) -> {
-				return file.getPath().contains(markdownDetector);
-			}).collect(Collectors.toSet())
-		);
-		
+		generator.addMarkdownFiles(collectFiles(rootDirectory, includes, excludes));
+		generator.addResourceFiles(Arrays.asList(resources).parallelStream().map((resource) -> {
+			return collectFiles(resource, resourceIncludes, resourceExcludes);
+		}).flatMap(Collection::stream).collect(Collectors.toSet()));
 		generator.generate();
 	}
-
-	private String markdownDetector = File.separator + "src" + File.separator + "site";
-	private static final String RESOURCES = File.separator + "src" + File.separator  + "site" + File.separator + "resources";
-	private Collection<File> collectResources() {
-		return FileUtils.listFiles(rootDirectory, 
-			new IOFileFilter() {
-				@Override
-				public boolean accept(File file) {
-					return file.getPath().contains(RESOURCES);
-				}
-
-				@Override
-				public boolean accept(File dir, String name) {
-					return dir.getPath().contains(RESOURCES);
-				}
-			}, DirectoryFileFilter.INSTANCE);		
-	}	
+	
+	private Collection<File> collectFiles(File root, String[] includes, String[] excludes) {
+		if (!root.exists()) return Collections.emptySet();
+		DirectoryScanner scanner = new DirectoryScanner();
+		scanner.setBasedir(root);
+		scanner.setIncludes(includes);
+		scanner.setExcludes(excludes);
+		scanner.scan();
+		return Arrays.asList(scanner.getIncludedFiles()).parallelStream().map((file) -> {
+			return new File(root, file);
+		}).collect(Collectors.toSet());
+	}
 }
