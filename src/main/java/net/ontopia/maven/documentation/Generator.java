@@ -112,6 +112,7 @@ public class Generator {
 				c.put("body", renderer.render(document));
 				c.put("title", findTitle(document));
 				c.put("root", getRelativeToOutput(target));
+				c.put("project", project);
 				c.put("inputFile", source);
 
 				template.merge(c, writer);
