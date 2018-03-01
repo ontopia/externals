@@ -25,6 +25,7 @@ import java.util.Set;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang.StringUtils;
+import org.apache.maven.plugin.MojoFailureException;
 import org.apache.maven.plugin.logging.Log;
 import org.apache.maven.project.MavenProject;
 import org.apache.velocity.Template;
@@ -62,13 +63,23 @@ public class Generator {
 		this.log = log;
 	}
 
-	public void generate() {
-		initialize();
-		convertMarkdownFiles();
-		copyResourceFiles();
+	public void generate() throws MojoFailureException {
+		if ((markdownFiles != null) && !markdownFiles.isEmpty()) {
+			initialize();
+			convertMarkdownFiles();
+			copyResourceFiles();
+		} else {
+			log.info("No files marked for conversion, skipping execution");
+		}
 	}
 
-	private void initialize() {
+	private void initialize() throws MojoFailureException {
+		if (!outputDir.exists()) {
+			if (!outputDir.mkdirs()) {
+				throw new MojoFailureException("Could not create output directory " + outputDir);
+			}
+		}
+
 		MutableDataHolder options = PegdownOptionsAdapter.flexmarkOptions(
 			Extensions.ALL & ~Extensions.HARDWRAPS 
 				| Extensions.EXTANCHORLINKS | Extensions.SMARTS | Extensions.DEFINITIONS

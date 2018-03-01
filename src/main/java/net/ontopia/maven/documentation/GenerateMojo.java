@@ -58,12 +58,6 @@ public class GenerateMojo extends AbstractMojo {
 			return;
 		}
 		
-		if (!outDirectory.exists()) {
-			if (!outDirectory.mkdirs()) {
-				throw new MojoFailureException("Could not create output directory " + outDirectory);
-			}
-		}
-		
 		Generator generator = new Generator(project, log);
 		generator.setOutputDir(outDirectory);
 		generator.setTemplate(template);
