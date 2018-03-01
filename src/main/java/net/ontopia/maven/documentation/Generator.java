@@ -96,6 +96,7 @@ public class Generator {
 
 	private void convertMarkdownFiles() {
 		for (File mdFile : markdownFiles) {
+			log.debug("Converting " + mdFile);
 			convert(mdFile, getMarkdownTarget(mdFile));
 		}
 		log.info("Converted " + markdownFiles.size() + " markdown documents");
@@ -114,8 +115,6 @@ public class Generator {
 				c.put("inputFile", source);
 
 				template.merge(c, writer);
-				
-				log.debug("Converted " + source.getName());
 			}
 		} catch (IOException ioe) {
 			throw new RuntimeException("Could not convert " + source, ioe);
@@ -148,6 +147,7 @@ public class Generator {
 	private void copyResourceFiles() {
 		for (File resource : resourceFiles) {
 			try {
+				log.debug("Copying " + resource + " to " + getResourceTarget(resource));
 				FileUtils.copyFile(resource, getResourceTarget(resource));
 			} catch (IOException ioe) {
 				throw new RuntimeException("Could not copy resource " + resource, ioe);
