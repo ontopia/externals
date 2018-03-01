@@ -53,6 +53,11 @@ public class GenerateMojo extends AbstractMojo {
 			return;
 		}
 		
+		if (!rootDirectory.exists()) {
+			log.info("Input directory " + rootDirectory + " does not exist, skipping execution");
+			return;
+		}
+		
 		if (!outDirectory.exists()) {
 			if (!outDirectory.mkdirs()) {
 				throw new MojoFailureException("Could not create output directory " + outDirectory);
