@@ -31,20 +31,20 @@ public class TestLocator extends TMAPITestCase {
         final Locator loc2 = loc.resolve("./too");
         assertEquals("http://www.example.org/test%20me/too", loc2.toExternalForm());
 
-		/* qs@2018-03-07
+    /* qs@2018-03-07
 
-		The following disabled assertions are not legal:
-		- Locators should not encode or decode during construction or as method result as en-/decoding is scheme specific
-		- Locator contructor should not accept an illegal URI
-		
+    The following disabled assertions are not legal:
+    - Locators should not encode or decode during construction or as method result as en-/decoding is scheme specific
+    - Locator contructor should not accept an illegal URI
+
         assertEquals("http://www.example.org/test me/", loc.getReference());
         assertEquals("http://www.example.org/test me/too", loc2.getReference());
         final Locator loc3 = _tm.createLocator("http://www.example.org/test me/");
         assertEquals("http://www.example.org/test me/", loc3.getReference());
         assertEquals("http://www.example.org/test%20me/", loc3.toExternalForm());
         assertEquals(loc, loc3);
-		
-		*/
+
+    */
     }
 
     public void testIllegalLocatorAddresses() {
