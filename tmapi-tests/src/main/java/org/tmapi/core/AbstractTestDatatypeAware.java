@@ -58,6 +58,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     @Before
     @Override
     public void setUp() throws Exception {
+        super.setUp();
         _xsdString = createLocator(_XSD_STRING);
         _xsdInteger = createLocator(_XSD_INTEGER);
         _xsdInt = createLocator(_XSD_INT);
