@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
 		<groupId>net.ontopia</groupId>
@@ -9,7 +9,7 @@
 
 	<groupId>net.ontopia.external.org.tmapi</groupId>
 	<artifactId>tmapi-tests</artifactId>
-	<version>2.1-SNAPSHOT</version>
+	<version>2.1</version>
 	
 	<name>TMAPI Tests</name>
 	<description>Test cases for the TMAPI programming interface for accessing and manipulating data held in a topic map.</description>
@@ -53,7 +53,8 @@
 		<url>https://github.com/ontopia/externals</url>
 		<connection>scm:git:git://github.com/ontopia/externals.git</connection>
 		<developerConnection>scm:git:git://github.com/ontopia/externals.git</developerConnection>
-	</scm>
+	  <tag>tmapi-tests-2.1</tag>
+  </scm>
 	
 	<developers>
 		<developer>
