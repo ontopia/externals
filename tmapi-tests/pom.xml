@@ -9,7 +9,7 @@
 
 	<groupId>net.ontopia.external.org.tmapi</groupId>
 	<artifactId>tmapi-tests</artifactId>
-	<version>2.1.1</version>
+	<version>2.2-SNAPSHOT</version>
 	
 	<name>TMAPI Tests</name>
 	<description>Test cases for the TMAPI programming interface for accessing and manipulating data held in a topic map.</description>
@@ -53,7 +53,7 @@
 		<url>https://github.com/ontopia/externals</url>
 		<connection>scm:git:git@github.com:ontopia/externals.git</connection>
 		<developerConnection>scm:git:git@github.com:ontopia/externals.git</developerConnection>
-	  <tag>tmapi-tests-2.1.1</tag>
+	  <tag>HEAD</tag>
   </scm>
 	
 	<developers>
