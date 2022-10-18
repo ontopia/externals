@@ -140,7 +140,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         Assert.assertEquals(BigDecimal.TEN, dt.decimalValue());
         Assert.assertEquals(10L, dt.longValue());
         Assert.assertEquals(10, dt.intValue());
-        Assert.assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(10.0F, dt.floatValue(), 0);
     }
 
     @SuppressWarnings("boxing")
@@ -155,7 +155,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         Assert.assertEquals(BigDecimal.TEN, dt.decimalValue());
         Assert.assertEquals(10L, dt.longValue());
         Assert.assertEquals(10, dt.intValue());
-        Assert.assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(10.0F, dt.floatValue(), 0);
     }
 
     @SuppressWarnings("boxing")
@@ -172,7 +172,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         Assert.assertEquals(BigInteger.TEN, dt.integerValue());
         Assert.assertEquals(10L, dt.longValue());
         Assert.assertEquals(10, dt.intValue());
-        Assert.assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(10.0F, dt.floatValue(), 0);
     }
 
     @SuppressWarnings("boxing")
@@ -192,7 +192,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         Assert.assertEquals(BigInteger.TEN, dt.integerValue());
         Assert.assertEquals(10L, dt.longValue());
         Assert.assertEquals(10, dt.intValue());
-        Assert.assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(10.0F, dt.floatValue(), 0);
     }
 
     @SuppressWarnings("boxing")
@@ -208,7 +208,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         Assert.assertEquals(new BigInteger(strValue), dt.integerValue());
         Assert.assertEquals(1976L, dt.longValue());
         Assert.assertEquals(1976, dt.intValue());
-        Assert.assertEquals(1976.0F, dt.floatValue());
+        Assert.assertEquals(1976.0F, dt.floatValue(), 0);
     }
 
     @SuppressWarnings("boxing")
@@ -224,7 +224,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         Assert.assertEquals(new BigInteger(strValue), dt.integerValue());
         Assert.assertEquals(value, dt.longValue());
         Assert.assertEquals(1976, dt.intValue());
-        Assert.assertEquals(1976.0F, dt.floatValue());
+        Assert.assertEquals(1976.0F, dt.floatValue(), 0);
     }
 
     @SuppressWarnings("boxing")
@@ -241,7 +241,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         Assert.assertEquals(new BigInteger("1976"), dt.integerValue());
         Assert.assertEquals(1976L, dt.longValue());
         Assert.assertEquals(1976, dt.intValue());
-        Assert.assertEquals(value, dt.floatValue());
+        Assert.assertEquals(value, dt.floatValue(), 0);
     }
 
     @Test
