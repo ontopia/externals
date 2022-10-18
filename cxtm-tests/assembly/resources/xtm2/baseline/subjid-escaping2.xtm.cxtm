@@ -1,7 +1,7 @@
 <topicMap>
 <topic number="1">
 <subjectIdentifiers>
-<locator>http://example.org/test folder/#topic</locator>
+<locator>http://example.org/test%20folder/#topic</locator>
 </subjectIdentifiers>
 <itemIdentifiers>
 <locator>#topic</locator>
