@@ -42,7 +42,7 @@ public class TestFeatureStrings {
     }
 
     @After
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         _factory = null;
     }
 
