@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>net.ontopia</groupId>
 	<artifactId>super-pom</artifactId>
-	<version>2</version>
+	<version>3-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	
 	<name>Ontopia super POM</name>
@@ -22,7 +22,7 @@
 		<url>https://github.com/ontopia/externals</url>
 		<connection>scm:git:git@github.com:ontopia/externals.git</connection>
 		<developerConnection>scm:git:git@github.com:ontopia/externals.git</developerConnection>
-	  <tag>super-pom-2</tag>
+	  <tag>HEAD</tag>
   </scm>
 	
 	<developers>
