@@ -13,7 +13,10 @@
  */
 package org.tmapi.core;
 
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests if the TMAPI feature strings are recognised.
@@ -22,7 +25,7 @@ import junit.framework.TestCase;
  * @author Lars Heuer (heuer[at]semagia.com) <a href="http://www.semagia.com/">Semagia</a>
  * @version $Rev: 129 $ - $Date: 2009-10-22 13:31:17 +0000 (Thu, 22 Oct 2009) $
  */
-public class TestFeatureStrings extends TestCase {
+public class TestFeatureStrings {
 
     private static final String _FEATURE_BASE = "http://tmapi.org/features/";
     
@@ -33,20 +36,13 @@ public class TestFeatureStrings extends TestCase {
     
     private TopicMapSystemFactory _factory;
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
+    @Before
+    public void setUp() throws Exception {
         _factory = TopicMapSystemFactory.newInstance();
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @Override
+    @After
     protected void tearDown() throws Exception {
-        super.tearDown();
         _factory = null;
     }
 
@@ -71,6 +67,7 @@ public class TestFeatureStrings extends TestCase {
      * @throws FeatureNotRecognizedException 
      *          If the Topic Maps engine is not TMAPI 2.0 compatible.
      */
+    @Test
     public void testTypeInstanceAssociations() throws FeatureNotRecognizedException {
         _testFeature(TYPE_INSTANCE_ASSOCS);
     }
@@ -81,6 +78,7 @@ public class TestFeatureStrings extends TestCase {
      * @throws FeatureNotRecognizedException 
      *          If the Topic Maps engine is not TMAPI 2.0 compatible.
      */
+    @Test
     public void testAutomerge() throws FeatureNotRecognizedException {
         _testFeature(AUTOMERGE);
     }
@@ -90,6 +88,7 @@ public class TestFeatureStrings extends TestCase {
      *
      * @throws FeatureNotRecognizedException If the Topic Maps engine is not TMAPI 2.0 compatible.
      */
+    @Test
     public void testReadOnly() throws FeatureNotRecognizedException {
         _testFeature(READ_ONLY);
     }
@@ -107,11 +106,11 @@ public class TestFeatureStrings extends TestCase {
             _factory.setFeature(featureName, enabledInFactory);
         }
         catch (FeatureNotSupportedException ex) {
-            fail("The engine does not allow to set the feature string to the default value returned by factory.getFeature(String)");
+            Assert.fail("The engine does not allow to set the feature string to the default value returned by factory.getFeature(String)");
         }
         final TopicMapSystem sys = makeTopicMapSystem();
         final boolean enabledInSystem = sys.getFeature(featureName);
-        assertEquals("The system has a different value of " + featureName + " than the factory", 
+        Assert.assertEquals("The system has a different value of " + featureName + " than the factory", 
                         enabledInFactory, enabledInSystem);
     }
 }

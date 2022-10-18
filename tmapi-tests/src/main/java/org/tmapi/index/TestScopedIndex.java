@@ -14,7 +14,9 @@
 package org.tmapi.index;
 
 import java.util.Collections;
-
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.tmapi.core.Association;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
@@ -31,17 +33,11 @@ import org.tmapi.core.Variant;
  */
 public class TestScopedIndex extends TMAPITestCase {
 
-    public TestScopedIndex(String name) {
-        super(name);
-    }
-
     private ScopedIndex _scopedIdx;
 
-    /* (non-Javadoc)
-     * @see org.tmapi.core.TMAPITestCase#setUp()
-     */
+    @Before
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         _scopedIdx = _tm.getIndex(ScopedIndex.class);
         _scopedIdx.open();
@@ -50,8 +46,9 @@ public class TestScopedIndex extends TMAPITestCase {
     /* (non-Javadoc)
      * @see org.tmapi.core.TMAPITestCase#tearDown()
      */
+    @After
     @Override
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         _scopedIdx.close();
         _scopedIdx = null;
@@ -66,28 +63,28 @@ public class TestScopedIndex extends TMAPITestCase {
     public void testAssociation() {
         Topic theme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getAssociations(null).isEmpty());
-        assertTrue(_scopedIdx.getAssociations(theme).isEmpty());
-        assertTrue(_scopedIdx.getAssociationThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getAssociations(null).isEmpty());
+        Assert.assertTrue(_scopedIdx.getAssociations(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getAssociationThemes().isEmpty());
         Association scoped = createAssociation();
-        assertEquals(0, scoped.getScope().size());
+        Assert.assertEquals(0, scoped.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getAssociations(null).size());
-        assertTrue(_scopedIdx.getAssociations(null).contains(scoped));
-        assertFalse(_scopedIdx.getAssociationThemes().contains(theme));
+        Assert.assertEquals(1, _scopedIdx.getAssociations(null).size());
+        Assert.assertTrue(_scopedIdx.getAssociations(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getAssociationThemes().contains(theme));
         scoped.addTheme(theme);
         _updateIndex();
-        assertEquals(0, _scopedIdx.getAssociations(null).size());
-        assertFalse(_scopedIdx.getAssociations(null).contains(scoped));
-        assertFalse(_scopedIdx.getAssociationThemes().isEmpty());
-        assertEquals(1, _scopedIdx.getAssociationThemes().size());
-        assertTrue(_scopedIdx.getAssociations(theme).contains(scoped));
-        assertTrue(_scopedIdx.getAssociationThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getAssociations(null).size());
+        Assert.assertFalse(_scopedIdx.getAssociations(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getAssociationThemes().isEmpty());
+        Assert.assertEquals(1, _scopedIdx.getAssociationThemes().size());
+        Assert.assertTrue(_scopedIdx.getAssociations(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociationThemes().contains(theme));
         scoped.remove();
         _updateIndex();
-        assertEquals(0, _scopedIdx.getAssociations(null).size());
-        assertFalse(_scopedIdx.getAssociations(null).contains(scoped));
-        assertFalse(_scopedIdx.getAssociationThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getAssociations(null).size());
+        Assert.assertFalse(_scopedIdx.getAssociations(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getAssociationThemes().contains(theme));
     }
 
     public void testAssociationMatchAll() {
@@ -95,39 +92,39 @@ public class TestScopedIndex extends TMAPITestCase {
         final Topic theme2 = createTopic();
         final Topic unusedTheme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getAssociations(null).isEmpty());
-        assertTrue(_scopedIdx.getAssociations(theme).isEmpty());
-        assertTrue(_scopedIdx.getAssociationThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getAssociations(null).isEmpty());
+        Assert.assertTrue(_scopedIdx.getAssociations(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getAssociationThemes().isEmpty());
         Association scoped = createAssociation();
-        assertEquals(0, scoped.getScope().size());
+        Assert.assertEquals(0, scoped.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getAssociations(null).size());
-        assertTrue(_scopedIdx.getAssociations(null).contains(scoped));
-        assertFalse(_scopedIdx.getAssociationThemes().contains(theme));
+        Assert.assertEquals(1, _scopedIdx.getAssociations(null).size());
+        Assert.assertTrue(_scopedIdx.getAssociations(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getAssociationThemes().contains(theme));
         scoped.addTheme(theme);
         _updateIndex();
-        assertEquals(1, _scopedIdx.getAssociationThemes().size());
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertEquals(1, _scopedIdx.getAssociationThemes().size());
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, false).contains(scoped));
         scoped.addTheme(theme2);
         _updateIndex();
-        assertEquals(2, _scopedIdx.getAssociationThemes().size());
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme, theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme, theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme, unusedTheme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getAssociations(new Topic[]{theme2, unusedTheme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getAssociations(new Topic[]{theme, unusedTheme}, true).contains(scoped));
-        assertFalse(_scopedIdx.getAssociations(new Topic[]{theme2, unusedTheme}, true).contains(scoped));
+        Assert.assertEquals(2, _scopedIdx.getAssociationThemes().size());
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme, theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme, theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme, unusedTheme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getAssociations(new Topic[]{theme2, unusedTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getAssociations(new Topic[]{theme, unusedTheme}, true).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getAssociations(new Topic[]{theme2, unusedTheme}, true).contains(scoped));
     }
 
     public void testAssociationMatchAllIllegal() {
         try {
             _scopedIdx.getAssociations(null, true);
-            fail("getAssociations(null, boolean) is illegal");
+            Assert.fail("getAssociations(null, boolean) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -137,28 +134,28 @@ public class TestScopedIndex extends TMAPITestCase {
     public void testOccurrence() {
         Topic theme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getOccurrences(null).isEmpty());
-        assertTrue(_scopedIdx.getOccurrences(theme).isEmpty());
-        assertTrue(_scopedIdx.getOccurrenceThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getOccurrences(null).isEmpty());
+        Assert.assertTrue(_scopedIdx.getOccurrences(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getOccurrenceThemes().isEmpty());
         Occurrence scoped = createOccurrence();
-        assertEquals(0, scoped.getScope().size());
+        Assert.assertEquals(0, scoped.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getOccurrences(null).size());
-        assertTrue(_scopedIdx.getOccurrences(null).contains(scoped));
-        assertFalse(_scopedIdx.getOccurrenceThemes().contains(theme));
+        Assert.assertEquals(1, _scopedIdx.getOccurrences(null).size());
+        Assert.assertTrue(_scopedIdx.getOccurrences(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getOccurrenceThemes().contains(theme));
         scoped.addTheme(theme);
         _updateIndex();
-        assertEquals(0, _scopedIdx.getOccurrences(null).size());
-        assertFalse(_scopedIdx.getOccurrences(null).contains(scoped));
-        assertFalse(_scopedIdx.getOccurrenceThemes().isEmpty());
-        assertEquals(1, _scopedIdx.getOccurrenceThemes().size());
-        assertTrue(_scopedIdx.getOccurrences(theme).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrenceThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getOccurrences(null).size());
+        Assert.assertFalse(_scopedIdx.getOccurrences(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getOccurrenceThemes().isEmpty());
+        Assert.assertEquals(1, _scopedIdx.getOccurrenceThemes().size());
+        Assert.assertTrue(_scopedIdx.getOccurrences(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrenceThemes().contains(theme));
         scoped.remove();
         _updateIndex();
-        assertEquals(0, _scopedIdx.getOccurrences(null).size());
-        assertFalse(_scopedIdx.getOccurrences(null).contains(scoped));
-        assertFalse(_scopedIdx.getOccurrenceThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getOccurrences(null).size());
+        Assert.assertFalse(_scopedIdx.getOccurrences(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getOccurrenceThemes().contains(theme));
     }
 
     public void testOccurrenceMatchAll() {
@@ -166,39 +163,39 @@ public class TestScopedIndex extends TMAPITestCase {
         final Topic theme2 = createTopic();
         final Topic unusedTheme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getOccurrences(null).isEmpty());
-        assertTrue(_scopedIdx.getOccurrences(theme).isEmpty());
-        assertTrue(_scopedIdx.getOccurrenceThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getOccurrences(null).isEmpty());
+        Assert.assertTrue(_scopedIdx.getOccurrences(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getOccurrenceThemes().isEmpty());
         final Occurrence scoped = createOccurrence();
-        assertEquals(0, scoped.getScope().size());
+        Assert.assertEquals(0, scoped.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getOccurrences(null).size());
-        assertTrue(_scopedIdx.getOccurrences(null).contains(scoped));
-        assertFalse(_scopedIdx.getOccurrenceThemes().contains(theme));
+        Assert.assertEquals(1, _scopedIdx.getOccurrences(null).size());
+        Assert.assertTrue(_scopedIdx.getOccurrences(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getOccurrenceThemes().contains(theme));
         scoped.addTheme(theme);
         _updateIndex();
-        assertEquals(1, _scopedIdx.getOccurrenceThemes().size());
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertEquals(1, _scopedIdx.getOccurrenceThemes().size());
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, false).contains(scoped));
         scoped.addTheme(theme2);
         _updateIndex();
-        assertEquals(2, _scopedIdx.getOccurrenceThemes().size());
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme, theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme, theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme, unusedTheme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme2, unusedTheme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getOccurrences(new Topic[]{theme, unusedTheme}, true).contains(scoped));
-        assertFalse(_scopedIdx.getOccurrences(new Topic[]{theme2, unusedTheme}, true).contains(scoped));
+        Assert.assertEquals(2, _scopedIdx.getOccurrenceThemes().size());
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme, theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme, theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme, unusedTheme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getOccurrences(new Topic[]{theme2, unusedTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getOccurrences(new Topic[]{theme, unusedTheme}, true).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getOccurrences(new Topic[]{theme2, unusedTheme}, true).contains(scoped));
     }
 
     public void testOccurrenceMatchAllIllegal() {
         try {
             _scopedIdx.getOccurrences(null, true);
-            fail("getOccurrences(null, boolean) is illegal");
+            Assert.fail("getOccurrences(null, boolean) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -208,51 +205,51 @@ public class TestScopedIndex extends TMAPITestCase {
     public void testName() {
         Topic theme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getNames(null).isEmpty());
-        assertTrue(_scopedIdx.getNames(theme).isEmpty());
-        assertTrue(_scopedIdx.getNameThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getNames(null).isEmpty());
+        Assert.assertTrue(_scopedIdx.getNames(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getNameThemes().isEmpty());
         Name scoped = createName();
-        assertEquals(0, scoped.getScope().size());
+        Assert.assertEquals(0, scoped.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getNames(null).size());
-        assertTrue(_scopedIdx.getNames(null).contains(scoped));
-        assertFalse(_scopedIdx.getNameThemes().contains(theme));
+        Assert.assertEquals(1, _scopedIdx.getNames(null).size());
+        Assert.assertTrue(_scopedIdx.getNames(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getNameThemes().contains(theme));
         scoped.addTheme(theme);
         _updateIndex();
-        assertEquals(0, _scopedIdx.getNames(null).size());
-        assertFalse(_scopedIdx.getNames(null).contains(scoped));
-        assertFalse(_scopedIdx.getNameThemes().isEmpty());
-        assertEquals(1, _scopedIdx.getNameThemes().size());
-        assertTrue(_scopedIdx.getNames(theme).contains(scoped));
-        assertTrue(_scopedIdx.getNameThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getNames(null).size());
+        Assert.assertFalse(_scopedIdx.getNames(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getNameThemes().isEmpty());
+        Assert.assertEquals(1, _scopedIdx.getNameThemes().size());
+        Assert.assertTrue(_scopedIdx.getNames(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNameThemes().contains(theme));
         scoped.remove();
         _updateIndex();
-        assertEquals(0, _scopedIdx.getNames(null).size());
-        assertFalse(_scopedIdx.getNames(null).contains(scoped));
-        assertFalse(_scopedIdx.getNameThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getNames(null).size());
+        Assert.assertFalse(_scopedIdx.getNames(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getNameThemes().contains(theme));
     }
 
     public void testName2() {
         Topic theme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getNames(null).isEmpty());
-        assertTrue(_scopedIdx.getNames(theme).isEmpty());
-        assertTrue(_scopedIdx.getNameThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getNames(null).isEmpty());
+        Assert.assertTrue(_scopedIdx.getNames(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getNameThemes().isEmpty());
         Name scoped = createTopic().createName("tinyTiM", Collections.singleton(theme));
-        assertEquals(1, scoped.getScope().size());
+        Assert.assertEquals(1, scoped.getScope().size());
         _updateIndex();
-        assertEquals(0, _scopedIdx.getNames(null).size());
-        assertFalse(_scopedIdx.getNames(null).contains(scoped));
-        assertFalse(_scopedIdx.getNameThemes().isEmpty());
-        assertEquals(1, _scopedIdx.getNameThemes().size());
-        assertTrue(_scopedIdx.getNames(theme).contains(scoped));
-        assertTrue(_scopedIdx.getNameThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getNames(null).size());
+        Assert.assertFalse(_scopedIdx.getNames(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getNameThemes().isEmpty());
+        Assert.assertEquals(1, _scopedIdx.getNameThemes().size());
+        Assert.assertTrue(_scopedIdx.getNames(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNameThemes().contains(theme));
         scoped.remove();
         _updateIndex();
-        assertEquals(0, _scopedIdx.getNames(null).size());
-        assertFalse(_scopedIdx.getNames(null).contains(scoped));
-        assertEquals(0, _scopedIdx.getNames(theme).size());
-        assertFalse(_scopedIdx.getNameThemes().contains(theme));
+        Assert.assertEquals(0, _scopedIdx.getNames(null).size());
+        Assert.assertFalse(_scopedIdx.getNames(null).contains(scoped));
+        Assert.assertEquals(0, _scopedIdx.getNames(theme).size());
+        Assert.assertFalse(_scopedIdx.getNameThemes().contains(theme));
     }
 
     public void testNameMatchAll() {
@@ -260,39 +257,39 @@ public class TestScopedIndex extends TMAPITestCase {
         final Topic theme2 = createTopic();
         final Topic unusedTheme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getNames(null).isEmpty());
-        assertTrue(_scopedIdx.getNames(theme).isEmpty());
-        assertTrue(_scopedIdx.getNameThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getNames(null).isEmpty());
+        Assert.assertTrue(_scopedIdx.getNames(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getNameThemes().isEmpty());
         final Name scoped = createName();
-        assertEquals(0, scoped.getScope().size());
+        Assert.assertEquals(0, scoped.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getNames(null).size());
-        assertTrue(_scopedIdx.getNames(null).contains(scoped));
-        assertFalse(_scopedIdx.getNameThemes().contains(theme));
+        Assert.assertEquals(1, _scopedIdx.getNames(null).size());
+        Assert.assertTrue(_scopedIdx.getNames(null).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getNameThemes().contains(theme));
         scoped.addTheme(theme);
         _updateIndex();
-        assertEquals(1, _scopedIdx.getNameThemes().size());
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertEquals(1, _scopedIdx.getNameThemes().size());
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme}, false).contains(scoped));
         scoped.addTheme(theme2);
         _updateIndex();
-        assertEquals(2, _scopedIdx.getNameThemes().size());
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme, theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme, theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme, unusedTheme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getNames(new Topic[]{theme2, unusedTheme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getNames(new Topic[]{theme, unusedTheme}, true).contains(scoped));
-        assertFalse(_scopedIdx.getNames(new Topic[]{theme2, unusedTheme}, true).contains(scoped));
+        Assert.assertEquals(2, _scopedIdx.getNameThemes().size());
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme, theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme, theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme, unusedTheme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getNames(new Topic[]{theme2, unusedTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getNames(new Topic[]{theme, unusedTheme}, true).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getNames(new Topic[]{theme2, unusedTheme}, true).contains(scoped));
     }
 
     public void testNameMatchAllIllegal() {
         try {
             _scopedIdx.getNames(null, true);
-            fail("getNames(null, boolean) is illegal");
+            Assert.fail("getNames(null, boolean) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -302,7 +299,7 @@ public class TestScopedIndex extends TMAPITestCase {
     public void testVariantIllegal() {
         try {
             _scopedIdx.getVariants(null);
-            fail("getVariants(null) is illegal");
+            Assert.fail("getVariants(null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -312,7 +309,7 @@ public class TestScopedIndex extends TMAPITestCase {
     public void testVariantMatchAllIllegal() {
         try {
             _scopedIdx.getVariants(null, true);
-            fail("getVariants(null, boolean) is illegal");
+            Assert.fail("getVariants(null, boolean) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -323,94 +320,94 @@ public class TestScopedIndex extends TMAPITestCase {
         final Topic theme = createTopic();
         final Topic theme2 = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getVariants(theme).isEmpty());
-        assertTrue(_scopedIdx.getVariantThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariants(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariantThemes().isEmpty());
         final Name name = createName();
-        assertEquals(0, name.getScope().size());
+        Assert.assertEquals(0, name.getScope().size());
         final Variant scoped = name.createVariant("Variant", theme);
-        assertEquals("Unexpected variant's scope size", 1, scoped.getScope().size());
+        Assert.assertEquals("Unexpected variant's scope size", 1, scoped.getScope().size());
         _updateIndex();
-        assertFalse(_scopedIdx.getVariantThemes().isEmpty());
-        assertEquals("Unexpected number of variant themes", 
+        Assert.assertFalse(_scopedIdx.getVariantThemes().isEmpty());
+        Assert.assertEquals("Unexpected number of variant themes", 
                         1, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
         // Add theme to name
         name.addTheme(theme2);
-        assertEquals(1, name.getScope().size());
-        assertEquals("The scope change of the parent is not reflected in the variant's scope",
+        Assert.assertEquals(1, name.getScope().size());
+        Assert.assertEquals("The scope change of the parent is not reflected in the variant's scope",
                         2, scoped.getScope().size());
         _updateIndex();
-        assertEquals("Change of the parent's scope is not reflected in the index",
+        Assert.assertEquals("Change of the parent's scope is not reflected in the index",
                     2, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
-        assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
         // Remove theme from name
         name.removeTheme(theme2);
         _updateIndex();
-        assertFalse(_scopedIdx.getVariantThemes().isEmpty());
-        assertEquals("The scope change in the name is not reflected in variant",
+        Assert.assertFalse(_scopedIdx.getVariantThemes().isEmpty());
+        Assert.assertEquals("The scope change in the name is not reflected in variant",
                         1, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
         scoped.addTheme(theme2);
         _updateIndex();
-        assertEquals("Change of the variant's scope is not reflected in the index",
+        Assert.assertEquals("Change of the variant's scope is not reflected in the index",
                         2, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
-        assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
         // Add theme to name
         name.addTheme(theme2);
         _updateIndex();
-        assertEquals("Adding a theme to the variant's parent is not reflected",
+        Assert.assertEquals("Adding a theme to the variant's parent is not reflected",
                         2, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
-        assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
         // Remove theme from name
         name.removeTheme(theme2);
         _updateIndex();
-        assertEquals("Removing the name's theme MUST NOT be reflected in the variant's scope",
+        Assert.assertEquals("Removing the name's theme MUST NOT be reflected in the variant's scope",
                         2, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
-        assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
         scoped.removeTheme(theme2);
-        assertFalse(_scopedIdx.getVariantThemes().isEmpty());
-        assertEquals(1, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertFalse(_scopedIdx.getVariantThemes().isEmpty());
+        Assert.assertEquals(1, _scopedIdx.getVariantThemes().size());
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
     }
 
     public void testVariant2() {
         final Topic theme = createTopic();
         final Topic theme2 = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getVariants(theme).isEmpty());
-        assertTrue(_scopedIdx.getVariants(theme2).isEmpty());
-        assertTrue(_scopedIdx.getVariantThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariants(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariantThemes().isEmpty());
         final Name name = createTopic().createName("Name", theme2);
-        assertEquals(1, name.getScope().size());
+        Assert.assertEquals(1, name.getScope().size());
         final Variant scoped = name.createVariant("Variant", theme);
-        assertEquals(2, scoped.getScope().size());
+        Assert.assertEquals(2, scoped.getScope().size());
         _updateIndex();
-        assertEquals(2, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
-        assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
+        Assert.assertEquals(2, _scopedIdx.getVariantThemes().size());
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme2));
         name.removeTheme(theme2);
-        assertEquals(0, name.getScope().size());
+        Assert.assertEquals(0, name.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
-        assertTrue(_scopedIdx.getVariantThemes().contains(theme));
+        Assert.assertEquals(1, _scopedIdx.getVariantThemes().size());
+        Assert.assertTrue(_scopedIdx.getVariants(theme).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariantThemes().contains(theme));
     }
 
     public void testVariantMatchAll() {
@@ -418,56 +415,56 @@ public class TestScopedIndex extends TMAPITestCase {
         final Topic theme2 = createTopic();
         final Topic unusedTheme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getVariants(theme).isEmpty());
-        assertTrue(_scopedIdx.getVariants(theme2).isEmpty());
-        assertTrue(_scopedIdx.getVariantThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariants(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariantThemes().isEmpty());
         final Name name = createTopic().createName("Name");
-        assertEquals(0, name.getScope().size());
+        Assert.assertEquals(0, name.getScope().size());
         final Variant scoped = name.createVariant("Variant", theme);
-        assertEquals(1, scoped.getScope().size());
+        Assert.assertEquals(1, scoped.getScope().size());
         _updateIndex();
-        assertEquals(1, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
+        Assert.assertEquals(1, _scopedIdx.getVariantThemes().size());
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
         scoped.addTheme(theme2);
         _updateIndex();
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme}, true).contains(scoped));
         final Topic nameTheme = createTopic();
         name.addTheme(nameTheme);
         _updateIndex();
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, true).contains(scoped));
         name.removeTheme(nameTheme);
         _updateIndex();
-        assertFalse(_scopedIdx.getVariants(new Topic[]{nameTheme}, true).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{nameTheme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{nameTheme}, true).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{nameTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, false).contains(scoped));
         scoped.removeTheme(theme);
         _updateIndex();
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
     }
 
     public void testVariantMatchAll2() {
@@ -476,27 +473,27 @@ public class TestScopedIndex extends TMAPITestCase {
         final Topic unusedTheme = createTopic();
         final Topic nameTheme = createTopic();
         _updateIndex();
-        assertTrue(_scopedIdx.getVariants(theme).isEmpty());
-        assertTrue(_scopedIdx.getVariants(theme2).isEmpty());
-        assertTrue(_scopedIdx.getVariantThemes().isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariants(theme).isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariants(theme2).isEmpty());
+        Assert.assertTrue(_scopedIdx.getVariantThemes().isEmpty());
         final Name name = createTopic().createName("Name", nameTheme);
-        assertEquals(1, name.getScope().size());
+        Assert.assertEquals(1, name.getScope().size());
         final Variant scoped = name.createVariant("Variant", theme, theme2);
-        assertEquals(3, scoped.getScope().size());
+        Assert.assertEquals(3, scoped.getScope().size());
         _updateIndex();
-        assertEquals(3, _scopedIdx.getVariantThemes().size());
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, true).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, false).contains(scoped));
-        assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, false).contains(scoped));
-        assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, true).contains(scoped));
+        Assert.assertEquals(3, _scopedIdx.getVariantThemes().size());
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{nameTheme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, true).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, nameTheme}, false).contains(scoped));
+        Assert.assertTrue(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, false).contains(scoped));
+        Assert.assertFalse(_scopedIdx.getVariants(new Topic[]{theme, theme2, unusedTheme, nameTheme}, true).contains(scoped));
     }
 
 }

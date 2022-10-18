@@ -16,10 +16,8 @@ package org.tmapi.core;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
-
-import junit.framework.TestCase;
-
-import org.tmapi.core.TopicMapSystemFactory;
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests against the {@link TopicMapSystemFactory}.
@@ -28,29 +26,18 @@ import org.tmapi.core.TopicMapSystemFactory;
  * @author Kal Ahmed
  * @version $Rev: 108 $ - $Date: 2009-06-19 12:09:27 +0000 (Fri, 19 Jun 2009) $
  */
-public class TestTopicMapSystemFactory extends TestCase {
+public class TestTopicMapSystemFactory {
 
-    /**
-     * Constructor for TopicMapSystemFactoryTest.
-     * 
-     * @param arg0
-     */
-    public TestTopicMapSystemFactory(String arg0) {
-        super(arg0);
-    }
-
-    public static void main(String[] args) {
-        junit.textui.TestRunner.run(TestTopicMapSystemFactory.class);
-    }
-
+    @Test
     public void testReadFromSystemProperty() throws Exception {
         System.setProperty("org.tmapi.core.TopicMapSystemFactory",
                 TopicMapSystemFactoryA.class.getName());
         TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
-        assertNotNull(factory);
-        assertTrue(factory instanceof TopicMapSystemFactoryA);
+        Assert.assertNotNull(factory);
+        Assert.assertTrue(factory instanceof TopicMapSystemFactoryA);
     }
 
+    @Test
     public void testReadFromRuntimeProperty() throws Exception {
         System.getProperties().remove("org.tmapi.core.TopicMapSystemFactory");
         File javaHome = new File(System.getProperty("java.home"));
@@ -71,9 +58,9 @@ public class TestTopicMapSystemFactory extends TestCase {
 
             TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
             boolean deleted = propsFile.delete();
-            assertTrue(deleted);
-            assertNotNull(factory);
-            assertTrue(factory instanceof TopicMapSystemFactoryB);
+            Assert.assertTrue(deleted);
+            Assert.assertNotNull(factory);
+            Assert.assertTrue(factory instanceof TopicMapSystemFactoryB);
         }
         finally {
             if (restoreProps) {
@@ -82,10 +69,11 @@ public class TestTopicMapSystemFactory extends TestCase {
         }
     }
 
+    @Test
     public void testReadFromResource() throws Exception {
         TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
-        assertNotNull(factory);
-        assertTrue(factory instanceof TopicMapSystemFactoryC);
+        Assert.assertNotNull(factory);
+        Assert.assertTrue(factory instanceof TopicMapSystemFactoryC);
     }
 
 }

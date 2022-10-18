@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Tests against the {@link Typed} interface.
  * 
@@ -22,21 +25,17 @@ package org.tmapi.core;
  */
 public class TestTyped extends TMAPITestCase {
 
-    public TestTyped(String name) {
-        super(name);
-    }
-
     protected void _testTyped(final Typed typed) {
         final Topic oldType = typed.getType();
-        assertNotNull("Unexpected null type", oldType);
+        Assert.assertNotNull("Unexpected null type", oldType);
         final Topic type = createTopic();
         typed.setType(type);
-        assertEquals("Expecting another type", type, typed.getType());
+        Assert.assertEquals("Expecting another type", type, typed.getType());
         typed.setType(oldType);
-        assertEquals("Expecting the previous type", oldType, typed.getType());
+        Assert.assertEquals("Expecting the previous type", oldType, typed.getType());
         try {
             typed.setType(null);
-            fail("Setting the type to null should be disallowed.");
+            Assert.fail("Setting the type to null should be disallowed.");
         }
         catch (ModelConstraintException ex) {
             // noop.
@@ -46,6 +45,7 @@ public class TestTyped extends TMAPITestCase {
     /**
      * Tests against an association.
      */
+    @Test
     public void testAssociation() {
         _testTyped(createAssociation());
     }
@@ -53,6 +53,7 @@ public class TestTyped extends TMAPITestCase {
     /**
      * Tests against a role.
      */
+    @Test
     public void testRole() {
         _testTyped(createRole());
     }
@@ -60,6 +61,7 @@ public class TestTyped extends TMAPITestCase {
     /**
      * Tests against an occurrence.
      */
+    @Test
     public void testOccurrence() {
         _testTyped(createOccurrence());
     }
@@ -67,6 +69,7 @@ public class TestTyped extends TMAPITestCase {
     /**
      * Tests against a name.
      */
+    @Test
     public void testName() {
         _testTyped(createName());
     }

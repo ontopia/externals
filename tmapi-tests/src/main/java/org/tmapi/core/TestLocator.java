@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /** 
  * Tests against the {@link Locator} interface.
  * 
@@ -21,36 +24,34 @@ package org.tmapi.core;
  */
 public class TestLocator extends TMAPITestCase {
 
-    public TestLocator(String name) {
-        super(name);
-    }
-
+    @Test
     public void testNormalization() {
         final Locator loc = _tm.createLocator("http://www.example.org/test%20me/");
-        assertEquals("http://www.example.org/test me/", loc.getReference());
-        assertEquals("http://www.example.org/test%20me/", loc.toExternalForm());
+        Assert.assertEquals("http://www.example.org/test me/", loc.getReference());
+        Assert.assertEquals("http://www.example.org/test%20me/", loc.toExternalForm());
         final Locator loc2 = loc.resolve("./too");
-        assertEquals("http://www.example.org/test me/too", loc2.getReference());
-        assertEquals("http://www.example.org/test%20me/too", loc2.toExternalForm());
+        Assert.assertEquals("http://www.example.org/test me/too", loc2.getReference());
+        Assert.assertEquals("http://www.example.org/test%20me/too", loc2.toExternalForm());
         final Locator loc3 = _tm.createLocator("http://www.example.org/test me/");
-        assertEquals("http://www.example.org/test me/", loc3.getReference());
-        assertEquals("http://www.example.org/test%20me/", loc3.toExternalForm());
-        assertEquals(loc, loc3);
+        Assert.assertEquals("http://www.example.org/test me/", loc3.getReference());
+        Assert.assertEquals("http://www.example.org/test%20me/", loc3.toExternalForm());
+        Assert.assertEquals(loc, loc3);
     }
 
+    @Test
     public void testIllegalLocatorAddresses() {
         final String[] ILLEGAL = {"", "#fragment"};
         for (String addr: ILLEGAL) {
             try {
                 _tm.createLocator(addr);
-                fail("Expected an error TopicMap#createLocator() with the input '" + addr + "'");
+                Assert.fail("Expected an error TopicMap#createLocator() with the input '" + addr + "'");
             }
             catch (MalformedIRIException ex) {
                 // noop.
             }
             try {
                 _sys.createLocator(addr);
-                fail("Expected an error TopicMapSystem#createLocator() with the input '" + addr + "'");
+                Assert.fail("Expected an error TopicMapSystem#createLocator() with the input '" + addr + "'");
             }
             catch (MalformedIRIException ex) {
                 // noop.
@@ -61,6 +62,7 @@ public class TestLocator extends TMAPITestCase {
     /**
      * Tests the examples from RFC 3986 -- 5.4.1. Normal Examples.
      */
+    @Test
     public void test_RFC_3986__5_4_1_Normal_Examples() {
         String[][] IRIS = new String[][] {
                 {"g:h", "g:h"},
@@ -92,9 +94,9 @@ public class TestLocator extends TMAPITestCase {
         };
         final String reference = "http://a/b/c/d;p?q";
         final Locator base = _tm.createLocator(reference);
-        assertEquals(reference, base.toExternalForm());
+        Assert.assertEquals(reference, base.toExternalForm());
         for (int i=0; i<IRIS.length; i++) {
-            assertEquals("Unexpected result for " + IRIS[i][0],
+            Assert.assertEquals("Unexpected result for " + IRIS[i][0],
                     IRIS[i][1], base.resolve(IRIS[i][0]).toExternalForm());
         }
     }
@@ -103,11 +105,12 @@ public class TestLocator extends TMAPITestCase {
      * According to RFC 3986 an empty fragment / query has to be kept and
      * must not be stripped away from the address.
      */
+    @Test
     public void testNormizationPreserveEmpty() {
         String ref = "http://www.tmapi.org/x?";
-        assertEquals("http://www.tmapi.org/x?", _tm.createLocator(ref).toExternalForm());
+        Assert.assertEquals("http://www.tmapi.org/x?", _tm.createLocator(ref).toExternalForm());
         ref = "http://www.tmapi.org/x#";
-        assertEquals("http://www.tmapi.org/x#", _tm.createLocator(ref).toExternalForm());
+        Assert.assertEquals("http://www.tmapi.org/x#", _tm.createLocator(ref).toExternalForm());
     }
 
 }

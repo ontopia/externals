@@ -13,6 +13,9 @@
  */
 package org.tmapi.index;
 
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
 import org.tmapi.core.Locator;
 import org.tmapi.core.Name;
 import org.tmapi.core.Occurrence;
@@ -33,15 +36,12 @@ public class TestLiteralIndex extends TMAPITestCase {
     private Locator _xsdString;
     private Locator _xsdAnyURI;
 
-    public TestLiteralIndex(String name) {
-        super(name);
-    }
-
     /* (non-Javadoc)
      * @see org.tmapi.core.TMAPITestCase#setUp()
      */
+    @Before
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         _litIdx = _tm.getIndex(LiteralIndex.class);
         _litIdx.open();
@@ -53,8 +53,9 @@ public class TestLiteralIndex extends TMAPITestCase {
     /* (non-Javadoc)
      * @see org.tmapi.core.TMAPITestCase#tearDown()
      */
+    @After
     @Override
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         _litIdx.close();
         _litIdx = null;
@@ -70,26 +71,26 @@ public class TestLiteralIndex extends TMAPITestCase {
         final String value = "Value";
         final String value2 = "Value2";
         _updateIndex();
-        assertEquals(0, _litIdx.getNames(value).size());
+        Assert.assertEquals(0, _litIdx.getNames(value).size());
         final Name name = createTopic().createName(value);
         _updateIndex();
-        assertEquals(1, _litIdx.getNames(value).size());
-        assertTrue(_litIdx.getNames(value).contains(name));
+        Assert.assertEquals(1, _litIdx.getNames(value).size());
+        Assert.assertTrue(_litIdx.getNames(value).contains(name));
         name.setValue(value2);
         _updateIndex();
-        assertEquals(0, _litIdx.getNames(value).size());
-        assertEquals(1, _litIdx.getNames(value2).size());
-        assertTrue(_litIdx.getNames(value2).contains(name));
+        Assert.assertEquals(0, _litIdx.getNames(value).size());
+        Assert.assertEquals(1, _litIdx.getNames(value2).size());
+        Assert.assertTrue(_litIdx.getNames(value2).contains(name));
         name.remove();
         _updateIndex();
-        assertEquals(0, _litIdx.getNames(value).size());
-        assertEquals(0, _litIdx.getNames(value2).size());
+        Assert.assertEquals(0, _litIdx.getNames(value).size());
+        Assert.assertEquals(0, _litIdx.getNames(value2).size());
     }
 
     public void testNameIllegalString() {
         try {
             _litIdx.getNames(null);
-            fail("getNames(null) is illegal");
+            Assert.fail("getNames(null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -100,58 +101,58 @@ public class TestLiteralIndex extends TMAPITestCase {
         final String value = "Value";
         final String value2 = "Value2";
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value, _xsdString).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value, _xsdString).size());
         final Topic type = createTopic();
         final Occurrence occ = createTopic().createOccurrence(type, value);
         _updateIndex();
-        assertEquals(1, _litIdx.getOccurrences(value).size());
-        assertTrue(_litIdx.getOccurrences(value).contains(occ));
-        assertEquals(1, _litIdx.getOccurrences(value, _xsdString).size());
-        assertTrue(_litIdx.getOccurrences(value, _xsdString).contains(occ));
+        Assert.assertEquals(1, _litIdx.getOccurrences(value).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value).contains(occ));
+        Assert.assertEquals(1, _litIdx.getOccurrences(value, _xsdString).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value, _xsdString).contains(occ));
         occ.setValue(value2);
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value, _xsdString).size());
-        assertEquals(1, _litIdx.getOccurrences(value2).size());
-        assertTrue(_litIdx.getOccurrences(value2).contains(occ));
-        assertEquals(1, _litIdx.getOccurrences(value2, _xsdString).size());
-        assertTrue(_litIdx.getOccurrences(value2, _xsdString).contains(occ));
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value, _xsdString).size());
+        Assert.assertEquals(1, _litIdx.getOccurrences(value2).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value2).contains(occ));
+        Assert.assertEquals(1, _litIdx.getOccurrences(value2, _xsdString).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value2, _xsdString).contains(occ));
         occ.remove();
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value, _xsdString).size());
-        assertEquals(0, _litIdx.getOccurrences(value2).size());
-        assertEquals(0, _litIdx.getOccurrences(value2, _xsdString).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value, _xsdString).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value2).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value2, _xsdString).size());
     }
 
     public void testOccurrenceURI() {
         final Locator value = createLocator("http://www.example.org/1");
         final Locator value2 = createLocator("http://www.example.org/2");
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
         final Topic type = createTopic();
         final Occurrence occ = createTopic().createOccurrence(type, value);
         _updateIndex();
-        assertEquals(1, _litIdx.getOccurrences(value).size());
-        assertTrue(_litIdx.getOccurrences(value).contains(occ));
-        assertEquals(1, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
-        assertTrue(_litIdx.getOccurrences(value.getReference(), _xsdAnyURI).contains(occ));
+        Assert.assertEquals(1, _litIdx.getOccurrences(value).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value).contains(occ));
+        Assert.assertEquals(1, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value.getReference(), _xsdAnyURI).contains(occ));
         occ.setValue(value2);
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
-        assertEquals(1, _litIdx.getOccurrences(value2).size());
-        assertTrue(_litIdx.getOccurrences(value2).contains(occ));
-        assertEquals(1, _litIdx.getOccurrences(value2.getReference(), _xsdAnyURI).size());
-        assertTrue(_litIdx.getOccurrences(value2.getReference(), _xsdAnyURI).contains(occ));
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(1, _litIdx.getOccurrences(value2).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value2).contains(occ));
+        Assert.assertEquals(1, _litIdx.getOccurrences(value2.getReference(), _xsdAnyURI).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value2.getReference(), _xsdAnyURI).contains(occ));
         occ.remove();
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
-        assertEquals(0, _litIdx.getOccurrences(value2).size());
-        assertEquals(0, _litIdx.getOccurrences(value2.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value2).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value2.getReference(), _xsdAnyURI).size());
     }
 
     public void testOccurrenceExplicitDatatype() {
@@ -159,31 +160,31 @@ public class TestLiteralIndex extends TMAPITestCase {
         final String value2 = "http://www.example.org/2";
         final Locator datatype = createLocator("http://www.example.org/datatype");
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value, datatype).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value, datatype).size());
         final Topic type = createTopic();
         final Occurrence occ = createTopic().createOccurrence(type, value, datatype);
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(1, _litIdx.getOccurrences(value, datatype).size());
-        assertTrue(_litIdx.getOccurrences(value, datatype).contains(occ));
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(1, _litIdx.getOccurrences(value, datatype).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value, datatype).contains(occ));
         occ.setValue(value2, datatype);
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value).size());
-        assertEquals(0, _litIdx.getOccurrences(value, datatype).size());
-        assertEquals(0, _litIdx.getOccurrences(value2).size());
-        assertEquals(1, _litIdx.getOccurrences(value2, datatype).size());
-        assertTrue(_litIdx.getOccurrences(value2, datatype).contains(occ));
+        Assert.assertEquals(0, _litIdx.getOccurrences(value).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value, datatype).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value2).size());
+        Assert.assertEquals(1, _litIdx.getOccurrences(value2, datatype).size());
+        Assert.assertTrue(_litIdx.getOccurrences(value2, datatype).contains(occ));
         occ.remove();
         _updateIndex();
-        assertEquals(0, _litIdx.getOccurrences(value2).size());
-        assertEquals(0, _litIdx.getOccurrences(value2, datatype).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value2).size());
+        Assert.assertEquals(0, _litIdx.getOccurrences(value2, datatype).size());
     }
 
     public void testOccurrenceIllegalString() {
         try {
             _litIdx.getOccurrences((String)null);
-            fail("getOccurrences((String)null) is illegal");
+            Assert.fail("getOccurrences((String)null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -193,7 +194,7 @@ public class TestLiteralIndex extends TMAPITestCase {
     public void testOccurrenceIllegalURI() {
         try {
             _litIdx.getOccurrences((Locator)null);
-            fail("getOccurrences((Locator)null) is illegal");
+            Assert.fail("getOccurrences((Locator)null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -203,7 +204,7 @@ public class TestLiteralIndex extends TMAPITestCase {
     public void testOccurrenceIllegalDatatype() {
         try {
             _litIdx.getOccurrences("value", null);
-            fail("getOccurrences(\"value\", null) is illegal");
+            Assert.fail("getOccurrences(\"value\", null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -214,58 +215,58 @@ public class TestLiteralIndex extends TMAPITestCase {
         final String value = "Value";
         final String value2 = "Value2";
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value, _xsdString).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value, _xsdString).size());
         final Topic theme = createTopic();
         final Variant variant = createName().createVariant(value, theme);
         _updateIndex();
-        assertEquals(1, _litIdx.getVariants(value).size());
-        assertTrue(_litIdx.getVariants(value).contains(variant));
-        assertEquals(1, _litIdx.getVariants(value, _xsdString).size());
-        assertTrue(_litIdx.getVariants(value, _xsdString).contains(variant));
+        Assert.assertEquals(1, _litIdx.getVariants(value).size());
+        Assert.assertTrue(_litIdx.getVariants(value).contains(variant));
+        Assert.assertEquals(1, _litIdx.getVariants(value, _xsdString).size());
+        Assert.assertTrue(_litIdx.getVariants(value, _xsdString).contains(variant));
         variant.setValue(value2);
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value, _xsdString).size());
-        assertEquals(1, _litIdx.getVariants(value2).size());
-        assertTrue(_litIdx.getVariants(value2).contains(variant));
-        assertEquals(1, _litIdx.getVariants(value2, _xsdString).size());
-        assertTrue(_litIdx.getVariants(value2, _xsdString).contains(variant));
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value, _xsdString).size());
+        Assert.assertEquals(1, _litIdx.getVariants(value2).size());
+        Assert.assertTrue(_litIdx.getVariants(value2).contains(variant));
+        Assert.assertEquals(1, _litIdx.getVariants(value2, _xsdString).size());
+        Assert.assertTrue(_litIdx.getVariants(value2, _xsdString).contains(variant));
         variant.remove();
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value, _xsdString).size());
-        assertEquals(0, _litIdx.getVariants(value2).size());
-        assertEquals(0, _litIdx.getVariants(value2, _xsdString).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value, _xsdString).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value2).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value2, _xsdString).size());
     }
 
     public void testVariantURI() {
         final Locator value = createLocator("http://www.example.org/1");
         final Locator value2 = createLocator("http://www.example.org/2");
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
         final Topic theme = createTopic();
         final Variant variant = createName().createVariant(value, theme);
         _updateIndex();
-        assertEquals(1, _litIdx.getVariants(value).size());
-        assertTrue(_litIdx.getVariants(value).contains(variant));
-        assertEquals(1, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
-        assertTrue(_litIdx.getVariants(value.getReference(), _xsdAnyURI).contains(variant));
+        Assert.assertEquals(1, _litIdx.getVariants(value).size());
+        Assert.assertTrue(_litIdx.getVariants(value).contains(variant));
+        Assert.assertEquals(1, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
+        Assert.assertTrue(_litIdx.getVariants(value.getReference(), _xsdAnyURI).contains(variant));
         variant.setValue(value2);
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
-        assertEquals(1, _litIdx.getVariants(value2).size());
-        assertTrue(_litIdx.getVariants(value2).contains(variant));
-        assertEquals(1, _litIdx.getVariants(value2.getReference(), _xsdAnyURI).size());
-        assertTrue(_litIdx.getVariants(value2.getReference(), _xsdAnyURI).contains(variant));
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(1, _litIdx.getVariants(value2).size());
+        Assert.assertTrue(_litIdx.getVariants(value2).contains(variant));
+        Assert.assertEquals(1, _litIdx.getVariants(value2.getReference(), _xsdAnyURI).size());
+        Assert.assertTrue(_litIdx.getVariants(value2.getReference(), _xsdAnyURI).contains(variant));
         variant.remove();
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
-        assertEquals(0, _litIdx.getVariants(value2).size());
-        assertEquals(0, _litIdx.getVariants(value2.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value.getReference(), _xsdAnyURI).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value2).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value2.getReference(), _xsdAnyURI).size());
     }
 
     public void testVariantExplicitDatatype() {
@@ -273,31 +274,31 @@ public class TestLiteralIndex extends TMAPITestCase {
         final String value2 = "http://www.example.org/2";
         final Locator datatype = createLocator("http://www.example.org/datatype");
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value, datatype).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value, datatype).size());
         final Topic theme = createTopic();
         final Variant variant = createName().createVariant(value, datatype, theme);
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(1, _litIdx.getVariants(value, datatype).size());
-        assertTrue(_litIdx.getVariants(value, datatype).contains(variant));
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(1, _litIdx.getVariants(value, datatype).size());
+        Assert.assertTrue(_litIdx.getVariants(value, datatype).contains(variant));
         variant.setValue(value2, datatype);
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value).size());
-        assertEquals(0, _litIdx.getVariants(value, datatype).size());
-        assertEquals(0, _litIdx.getVariants(value2).size());
-        assertEquals(1, _litIdx.getVariants(value2, datatype).size());
-        assertTrue(_litIdx.getVariants(value2, datatype).contains(variant));
+        Assert.assertEquals(0, _litIdx.getVariants(value).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value, datatype).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value2).size());
+        Assert.assertEquals(1, _litIdx.getVariants(value2, datatype).size());
+        Assert.assertTrue(_litIdx.getVariants(value2, datatype).contains(variant));
         variant.remove();
         _updateIndex();
-        assertEquals(0, _litIdx.getVariants(value2).size());
-        assertEquals(0, _litIdx.getVariants(value2, datatype).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value2).size());
+        Assert.assertEquals(0, _litIdx.getVariants(value2, datatype).size());
     }
 
     public void testVariantIllegalString() {
         try {
             _litIdx.getVariants((String)null);
-            fail("getVariants((String)null) is illegal");
+            Assert.fail("getVariants((String)null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -307,7 +308,7 @@ public class TestLiteralIndex extends TMAPITestCase {
     public void testVariantIllegalURI() {
         try {
             _litIdx.getVariants((Locator)null);
-            fail("getVariants((Locator)null) is illegal");
+            Assert.fail("getVariants((Locator)null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.
@@ -317,7 +318,7 @@ public class TestLiteralIndex extends TMAPITestCase {
     public void testVariantIllegalDatatype() {
         try {
             _litIdx.getVariants("value", null);
-            fail("getVariants(\"value\", null) is illegal");
+            Assert.fail("getVariants(\"value\", null) is illegal");
         }
         catch (IllegalArgumentException ex) {
             // noop.

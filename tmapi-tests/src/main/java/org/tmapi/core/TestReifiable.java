@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Tests against the {@link Reifiable} interface.
  * 
@@ -22,35 +25,31 @@ package org.tmapi.core;
  */
 public class TestReifiable extends TMAPITestCase {
 
-    public TestReifiable(String name) {
-        super(name);
-    }
-
     /**
      * Tests setting / getting the reifier for the <tt>reifiable</tt>.
      *
      * @param reifiable The reifiable to run the tests against.
      */
     protected void _testReification(final Reifiable reifiable) {
-        assertNull("Unexpected reifier property", reifiable.getReifier());
+        Assert.assertNull("Unexpected reifier property", reifiable.getReifier());
         final Topic reifier = createTopic();
-        assertNull(reifier.getReified());
+        Assert.assertNull(reifier.getReified());
         reifiable.setReifier(reifier);
-        assertEquals("Unexpected reifier property", reifier, reifiable.getReifier());
-        assertEquals("Unexpected reified property", reifiable, reifier.getReified());
+        Assert.assertEquals("Unexpected reifier property", reifier, reifiable.getReifier());
+        Assert.assertEquals("Unexpected reified property", reifiable, reifier.getReified());
         reifiable.setReifier(null);
-        assertNull("Reifier should be null", reifiable.getReifier());
-        assertNull("Reified should be null", reifier.getReified());
+        Assert.assertNull("Reifier should be null", reifiable.getReifier());
+        Assert.assertNull("Reified should be null", reifier.getReified());
         reifiable.setReifier(reifier);
-        assertEquals("Unexpected reifier property", reifier, reifiable.getReifier());
-        assertEquals("Unexpected reified property", reifiable, reifier.getReified());
+        Assert.assertEquals("Unexpected reifier property", reifier, reifiable.getReifier());
+        Assert.assertEquals("Unexpected reified property", reifiable, reifier.getReified());
         try {
             // Assigning the *same* reifier is allowed, the TM processor MUST NOT
             // raise an exception
             reifiable.setReifier(reifier);
         }
         catch (ModelConstraintException ex) {
-            fail("Unexpected exception while setting the reifier to the same value");
+            Assert.fail("Unexpected exception while setting the reifier to the same value");
         }
     }
 
@@ -61,72 +60,84 @@ public class TestReifiable extends TMAPITestCase {
      * @param reifiable The reifiable to run the tests against.
      */
     protected void _testReificationCollision(final Reifiable reifiable) {
-        assertNull("Unexpected reifier property", reifiable.getReifier());
+        Assert.assertNull("Unexpected reifier property", reifiable.getReifier());
         final Topic reifier = createTopic();
-        assertNull(reifier.getReified());
+        Assert.assertNull(reifier.getReified());
         final Reifiable otherReifiable = createAssociation();
         otherReifiable.setReifier(reifier);
-        assertEquals("Expected a reifier property", reifier, otherReifiable.getReifier());
-        assertEquals("Unexpected reified property", otherReifiable, reifier.getReified());
+        Assert.assertEquals("Expected a reifier property", reifier, otherReifiable.getReifier());
+        Assert.assertEquals("Unexpected reified property", otherReifiable, reifier.getReified());
         try {
             reifiable.setReifier(reifier);
-            fail("The reifier reifies already another construct");
+            Assert.fail("The reifier reifies already another construct");
         }
         catch (ModelConstraintException ex) {
-            assertEquals(reifiable, ex.getReporter());
+            Assert.assertEquals(reifiable, ex.getReporter());
         }
         otherReifiable.setReifier(null);
-        assertNull("Reifier property should be null", otherReifiable.getReifier());
-        assertNull("Reified property should be null", reifier.getReified());
+        Assert.assertNull("Reifier property should be null", otherReifiable.getReifier());
+        Assert.assertNull("Reified property should be null", reifier.getReified());
         reifiable.setReifier(reifier);
-        assertEquals("Reifier property should have been changed", reifier, reifiable.getReifier());
-        assertEquals("Reified property should have been changed", reifiable, reifier.getReified());
+        Assert.assertEquals("Reifier property should have been changed", reifier, reifiable.getReifier());
+        Assert.assertEquals("Reified property should have been changed", reifiable, reifier.getReified());
     }
 
+    @Test
     public void testTopicMap() {
         _testReification(_tm);
     }
 
+    @Test
     public void testTopicMapReifierCollision() {
         _testReificationCollision(_tm);
     }
 
+    @Test
     public void testAssociation() {
         _testReification(createAssociation());
     }
 
+    @Test
     public void testAssociationReifierCollision() {
         _testReificationCollision(createAssociation());
     }
 
+    @Test
     public void testRole() {
         _testReification(createRole());
     }
 
+    @Test
     public void testRoleReifierCollision() {
         _testReificationCollision(createRole());
     }
 
+    @Test
     public void testOccurrence() {
         _testReification(createOccurrence());
     }
 
+    @Test
     public void testOccurrenceReifierCollision() {
         _testReificationCollision(createOccurrence());
     }
 
+    @Test
     public void testName() {
         _testReification(createName());
     }
 
+    @Test
     public void testNameReifierCollision() {
         _testReificationCollision(createName());
     }
 
+    @Test
     public void testVariant() {
         _testReification(createVariant());
     }
 
+    @Test
     public void testVariantReifierCollision() {
         _testReificationCollision(createVariant());
     }

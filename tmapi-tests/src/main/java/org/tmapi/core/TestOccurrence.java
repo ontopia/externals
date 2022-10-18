@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Tests against the {@link Occurrence} interface.
  * 
@@ -21,10 +24,6 @@ package org.tmapi.core;
  * @version $Rev: 66 $ - $Date: 2008-08-20 11:26:30 +0000 (Wed, 20 Aug 2008) $
  */
 public class TestOccurrence extends AbstractTestDatatypeAware {
-
-    public TestOccurrence(String name) {
-        super(name);
-    }
 
     /* (non-Javadoc)
      * @see org.tmapi.core.TestDatatypeAware#getDatatypeAware()
@@ -37,19 +36,20 @@ public class TestOccurrence extends AbstractTestDatatypeAware {
     /**
      * Tests the parent/child relationship between topic and occurrence.
      */
+    @Test
     public void testParent() {
         final Topic parent = createTopic();
-        assertTrue("Expected new topics to be created with no occurrences",
+        Assert.assertTrue("Expected new topics to be created with no occurrences",
                     parent.getOccurrences().isEmpty());
         final Occurrence occ = parent.createOccurrence(createTopic(), "Occurrence");
-        assertEquals("Unexpected occurrence parent after creation",
+        Assert.assertEquals("Unexpected occurrence parent after creation",
                 parent, occ.getParent());
-        assertEquals("Expected occurrence set size to increment for topic",
+        Assert.assertEquals("Expected occurrence set size to increment for topic",
                     1, parent.getOccurrences().size());
-        assertTrue("Occurrence is not part of getOccurrences()",
+        Assert.assertTrue("Occurrence is not part of getOccurrences()",
                     parent.getOccurrences().contains(occ));
         occ.remove();
-        assertTrue("Expected occurrence set size to decrement for topic.",
+        Assert.assertTrue("Expected occurrence set size to decrement for topic.",
                     parent.getOccurrences().isEmpty());
     }
 

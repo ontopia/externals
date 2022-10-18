@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /** 
  * Tests against the {@link Locator} interface if the implementation is RFC 3986 compatible.
  * <p> See <a href="http://www.ietf.org/rfc/rfc3986.txt">RFC 3986</a></p>.
@@ -22,13 +25,10 @@ package org.tmapi.core;
  */
 public class TestRFC3986 extends TMAPITestCase {
 
-    public TestRFC3986(String name) {
-        super(name);
-    }
-
     /**
      * Tests the examples from RFC 3986 -- 5.4.1. Normal Examples.
      */
+    @Test
     public void test_RFC_3986__5_4_1_Normal_Examples() {
         String[][] IRIS = new String[][] {
                 {"g:h", "g:h"},
@@ -58,9 +58,9 @@ public class TestRFC3986 extends TMAPITestCase {
         };
         final String reference = "http://a/b/c/d;p?q";
         final Locator base = _tm.createLocator(reference);
-        assertEquals(reference, base.toExternalForm());
+        Assert.assertEquals(reference, base.toExternalForm());
         for (int i=0; i<IRIS.length; i++) {
-            assertEquals("Unexpected result for " + IRIS[i][0],
+            Assert.assertEquals("Unexpected result for " + IRIS[i][0],
                     IRIS[i][1], base.resolve(IRIS[i][0]).toExternalForm());
         }
     }

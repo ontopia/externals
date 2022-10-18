@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Tests against the {@link Role} interface.
  * 
@@ -22,58 +25,57 @@ package org.tmapi.core;
  */
 public class TestRole extends TMAPITestCase {
 
-    public TestRole(String name) {
-        super(name);
-    }
-
     /**
      * Tests the parent/child relationship between role and association.
      */
+    @Test
     public void testParent() {
         final Association parent = createAssociation();
-        assertTrue("Expected no roles in a newly created association",
+        Assert.assertTrue("Expected no roles in a newly created association",
                     parent.getRoles().isEmpty());
         final Role role = parent.createRole(createTopic(), createTopic());
-        assertEquals("Unexpected role parent after creation",
+        Assert.assertEquals("Unexpected role parent after creation",
                     parent, role.getParent());
-        assertEquals("Expected role set size to increment for association",
+        Assert.assertEquals("Expected role set size to increment for association",
                     1, parent.getRoles().size());
-        assertTrue("Role is not part of getRoles()",
+        Assert.assertTrue("Role is not part of getRoles()",
                     parent.getRoles().contains(role));
         role.remove();
-        assertTrue("Expected role set size to decrement for association.",
+        Assert.assertTrue("Expected role set size to decrement for association.",
                     parent.getRoles().isEmpty());
     }
 
+    @Test
     public void testRolePlayerSetGet() {
         final Association assoc = createAssociation();
-        assertTrue("Expected no roles in a newly created association",
+        Assert.assertTrue("Expected no roles in a newly created association",
                     assoc.getRoles().isEmpty());
         final Topic roleType = createTopic();
         final Topic player = createTopic();
         final Role role = assoc.createRole(roleType, player);
-        assertEquals("Unexpected role type", roleType, role.getType());
-        assertEquals("Unexpected role player", player, role.getPlayer());
-        assertTrue("Role is not reported in getRolesPlayed()",
+        Assert.assertEquals("Unexpected role type", roleType, role.getType());
+        Assert.assertEquals("Unexpected role player", player, role.getPlayer());
+        Assert.assertTrue("Role is not reported in getRolesPlayed()",
                     player.getRolesPlayed().contains(role));
         final Topic player2 = createTopic();
         role.setPlayer(player2);
-        assertEquals("Unexpected role player after setting to player2",
+        Assert.assertEquals("Unexpected role player after setting to player2",
                         player2, role.getPlayer());
-        assertTrue("Role is not reported in getRolesPlayed()",
+        Assert.assertTrue("Role is not reported in getRolesPlayed()",
                     player2.getRolesPlayed().contains(role));
-        assertTrue("'player' should not play the role anymore",
+        Assert.assertTrue("'player' should not play the role anymore",
                     player.getRolesPlayed().isEmpty());
         role.setPlayer(player);
-        assertEquals("Unexpected role player after setting to 'player'",
+        Assert.assertEquals("Unexpected role player after setting to 'player'",
                 player, role.getPlayer());
     }
 
+    @Test
     public void testIllegalPlayer() {
         Role role = createRole();
         try {
             role.setPlayer(null);
-            fail("Setting the role player to null is not allowed");
+            Assert.fail("Setting the role player to null is not allowed");
         }
         catch (ModelConstraintException ex) {
             // noop.

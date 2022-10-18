@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Tests against the {@link Variant} interface.
  * 
@@ -21,10 +24,6 @@ package org.tmapi.core;
  * @version $Rev: 66 $ - $Date: 2008-08-20 11:26:30 +0000 (Wed, 20 Aug 2008) $
  */
 public class TestVariant extends AbstractTestDatatypeAware {
-
-    public TestVariant(String name) {
-        super(name);
-    }
 
     /* (non-Javadoc)
      * @see org.tmapi.core.TestDatatypeAware#getDatatypeAware()
@@ -37,99 +36,103 @@ public class TestVariant extends AbstractTestDatatypeAware {
     /**
      * Tests the parent/child relationship between name and variant.
      */
+    @Test
     public void testParent() {
         final Name parent = createName();
-        assertTrue("Expected new name to be created with no variants",
+        Assert.assertTrue("Expected new name to be created with no variants",
                     parent.getVariants().isEmpty());
         final Variant variant = parent.createVariant("Variant", createTopic());
-        assertEquals("Unexpected variant parent after creation",
+        Assert.assertEquals("Unexpected variant parent after creation",
                 parent, variant.getParent());
-        assertEquals("Expected variant set size to increment for name",
+        Assert.assertEquals("Expected variant set size to increment for name",
                     1, parent.getVariants().size());
-        assertTrue("Variant is not part of getVariants()",
+        Assert.assertTrue("Variant is not part of getVariants()",
                     parent.getVariants().contains(variant));
         variant.remove();
-        assertTrue("Expected variant set size to decrement for name.",
+        Assert.assertTrue("Expected variant set size to decrement for name.",
                     parent.getVariants().isEmpty());
     }
 
     /**
      * Tests if the variant's scope contains the name's scope.
      */
+    @Test
     public void testScopeProperty() {
         final Name name = createName();
-        assertTrue(name.getScope().isEmpty());
+        Assert.assertTrue(name.getScope().isEmpty());
         final Topic varTheme = createTopic();
         final Variant variant = name.createVariant("Variant", varTheme);
-        assertNotNull(variant);
-        assertEquals("Unexpected variant's scope", 
+        Assert.assertNotNull(variant);
+        Assert.assertEquals("Unexpected variant's scope", 
                         1, variant.getScope().size());
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
         final Topic nameTheme = createTopic();
         name.addTheme(nameTheme);
-        assertEquals(1, name.getScope().size());
-        assertTrue(name.getScope().contains(nameTheme));
-        assertEquals(2, variant.getScope().size());
-        assertTrue(variant.getScope().contains(nameTheme));
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertEquals(1, name.getScope().size());
+        Assert.assertTrue(name.getScope().contains(nameTheme));
+        Assert.assertEquals(2, variant.getScope().size());
+        Assert.assertTrue(variant.getScope().contains(nameTheme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
         name.removeTheme(nameTheme);
-        assertTrue(name.getScope().isEmpty());
-        assertEquals("Name's theme wasn't remove from the variant",
+        Assert.assertTrue(name.getScope().isEmpty());
+        Assert.assertEquals("Name's theme wasn't remove from the variant",
                         1, variant.getScope().size());
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
     }
 
     /**
      * Tests if a variant's theme equals to a name's theme stays 
      * even if the name's theme is removed.
      */
+    @Test
     public void testScopeProperty2() {
         final Topic theme = createTopic();
         final Topic varTheme = createTopic();
         final Name name = createTopic().createName("Name", theme);
-        assertEquals(1, name.getScope().size());
-        assertTrue(name.getScope().contains(theme));
+        Assert.assertEquals(1, name.getScope().size());
+        Assert.assertTrue(name.getScope().contains(theme));
         final Variant variant = name.createVariant("Variant", theme, varTheme);
-        assertNotNull(variant);
-        assertEquals("Unexpected variant's scope", 
+        Assert.assertNotNull(variant);
+        Assert.assertEquals("Unexpected variant's scope", 
                         2, variant.getScope().size());
-        assertTrue(variant.getScope().contains(theme));
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertTrue(variant.getScope().contains(theme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
         name.removeTheme(theme);
-        assertEquals(0, name.getScope().size());
-        assertEquals("Unexpected variant's scope after removal of 'theme' from name", 
+        Assert.assertEquals(0, name.getScope().size());
+        Assert.assertEquals("Unexpected variant's scope after removal of 'theme' from name", 
                         2, variant.getScope().size());
-        assertTrue(variant.getScope().contains(theme));
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertTrue(variant.getScope().contains(theme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
     }
 
     /**
      * Tests if a variant's theme equals to a name's theme stays 
      * even if the variant's theme is removed.
      */
+    @Test
     public void testScopeProperty3() {
         final Topic theme = createTopic();
         final Topic varTheme = createTopic();
         final Name name = createTopic().createName("Name", theme);
-        assertEquals(1, name.getScope().size());
-        assertTrue(name.getScope().contains(theme));
+        Assert.assertEquals(1, name.getScope().size());
+        Assert.assertTrue(name.getScope().contains(theme));
         final Variant variant = name.createVariant("Variant", theme, varTheme);
-        assertNotNull(variant);
-        assertEquals("Unexpected variant's scope", 
+        Assert.assertNotNull(variant);
+        Assert.assertEquals("Unexpected variant's scope", 
                         2, variant.getScope().size());
-        assertTrue(variant.getScope().contains(theme));
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertTrue(variant.getScope().contains(theme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
         variant.removeTheme(theme);
-        assertEquals("The parent still contains 'theme'", 
+        Assert.assertEquals("The parent still contains 'theme'", 
                         2, variant.getScope().size());
-        assertTrue(variant.getScope().contains(theme));
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertTrue(variant.getScope().contains(theme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
         name.removeTheme(theme);
-        assertEquals(0, name.getScope().size());
-        assertEquals("'theme' was removed from the name", 
+        Assert.assertEquals(0, name.getScope().size());
+        Assert.assertEquals("'theme' was removed from the name", 
                         1, variant.getScope().size());
-        assertFalse(variant.getScope().contains(theme));
-        assertTrue(variant.getScope().contains(varTheme));
+        Assert.assertFalse(variant.getScope().contains(theme));
+        Assert.assertTrue(variant.getScope().contains(varTheme));
     }
 
 }

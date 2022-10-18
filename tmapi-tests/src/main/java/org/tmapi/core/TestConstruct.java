@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Tests against the {@link Construct} interface.
  * 
@@ -22,10 +25,6 @@ package org.tmapi.core;
  */
 public class TestConstruct extends TMAPITestCase {
 
-    public TestConstruct(String name) {
-        super(name);
-    }
-
     /**
      * Tests adding / removing item identifiers, retrieval by item identifier 
      * and retrieval by the system specific id.
@@ -33,41 +32,42 @@ public class TestConstruct extends TMAPITestCase {
      * @param construct The Topic Maps construct to test.
      */
     protected void _testConstruct(final Construct construct) {
-        assertEquals("Unexpected item identifiers", 0, construct.getItemIdentifiers().size());
+        Assert.assertEquals("Unexpected item identifiers", 0, construct.getItemIdentifiers().size());
         final Locator iid = _tm.createLocator("http://www.tmapi.org/test#test");
         construct.addItemIdentifier(iid);
-        assertEquals("Expected a item identifier", 1, construct.getItemIdentifiers().size());
-        assertTrue("Unexpected item identifier in item identifier property",
+        Assert.assertEquals("Expected a item identifier", 1, construct.getItemIdentifiers().size());
+        Assert.assertTrue("Unexpected item identifier in item identifier property",
                     construct.getItemIdentifiers().contains(iid));
-        assertEquals("Unexpected construct retrieved", 
+        Assert.assertEquals("Unexpected construct retrieved", 
                         construct, _tm.getConstructByItemIdentifier(iid));
         construct.removeItemIdentifier(iid);
-        assertEquals("Item identifier was not removed", 
+        Assert.assertEquals("Item identifier was not removed", 
                         0, construct.getItemIdentifiers().size());
-        assertFalse(construct.getItemIdentifiers().contains(iid));
-        assertNull("Got an construct even if the item identifier is unassigned",
+        Assert.assertFalse(construct.getItemIdentifiers().contains(iid));
+        Assert.assertNull("Got an construct even if the item identifier is unassigned",
                     _tm.getConstructByItemIdentifier(iid));
         try {
             construct.addItemIdentifier(null);
-            fail("addItemIdentifier(null) is illegal");
+            Assert.fail("addItemIdentifier(null) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
         }
         if (construct instanceof TopicMap) {
-            assertNull(construct.getParent());
+            Assert.assertNull(construct.getParent());
         }
         else {
-            assertNotNull(construct.getParent());
+            Assert.assertNotNull(construct.getParent());
         }
-        assertEquals(_tm, construct.getTopicMap());
+        Assert.assertEquals(_tm, construct.getTopicMap());
         final String id = construct.getId();
-        assertEquals("Unexpected result", construct, _tm.getConstructById(id));
+        Assert.assertEquals("Unexpected result", construct, _tm.getConstructById(id));
     }
 
     /**
      * Tests against a topic map.
      */
+    @Test
     public void testTopicMap() {
         _testConstruct(_tm);
     }
@@ -75,6 +75,7 @@ public class TestConstruct extends TMAPITestCase {
     /**
      * Tests against a topic. 
      */
+    @Test
     public void testTopic() {
         // Avoid that the topic has an item identifier
         Topic topic = _tm.createTopicBySubjectLocator(_tm.createLocator("http://www.tmapi.org/"));
@@ -84,6 +85,7 @@ public class TestConstruct extends TMAPITestCase {
     /**
      * Tests against an association.
      */
+    @Test
     public void testAssociation() {
         _testConstruct(createAssociation());
     }
@@ -91,6 +93,7 @@ public class TestConstruct extends TMAPITestCase {
     /**
      * Tests against a role.
      */
+    @Test
     public void testRole() {
         _testConstruct(createRole());
     }
@@ -98,6 +101,7 @@ public class TestConstruct extends TMAPITestCase {
     /**
      * Tests against an occurrence.
      */
+    @Test
     public void testOccurrence() {
         _testConstruct(createOccurrence());
     }
@@ -105,6 +109,7 @@ public class TestConstruct extends TMAPITestCase {
     /**
      * Test against a name.
      */
+    @Test
     public void testName() {
         _testConstruct(createName());
     }
@@ -112,6 +117,7 @@ public class TestConstruct extends TMAPITestCase {
     /**
      * Tests against a variant.
      */
+    @Test
     public void testVariant() {
         _testConstruct(createVariant());
     }

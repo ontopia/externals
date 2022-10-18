@@ -13,6 +13,8 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
 
 /**
  * Tests if the engine respects the constraint if a {@link Topic} is removable
@@ -24,10 +26,6 @@ package org.tmapi.core;
  */
 public class TestTopicRemovableConstraint extends TMAPITestCase {
 
-    public TestTopicRemovableConstraint(String name) {
-        super(name);
-    }
-
     /**
      * Tests if the topic removable constraint is respected if a topic 
      * is used as type.
@@ -38,19 +36,19 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
         final int topicCount = _tm.getTopics().size();
         final Topic oldType = typed.getType();
         final Topic topic = createTopic();
-        assertEquals(topicCount+1, _tm.getTopics().size());
+        Assert.assertEquals(topicCount+1, _tm.getTopics().size());
         typed.setType(topic);
         try {
             topic.remove();
-            fail("The topic is used as type");
+            Assert.fail("The topic is used as type");
         }
         catch (TopicInUseException ex) {
-            assertEquals(topic, ex.getReporter());
+            Assert.assertEquals(topic, ex.getReporter());
         }
-        assertEquals(topicCount+1, _tm.getTopics().size());
+        Assert.assertEquals(topicCount+1, _tm.getTopics().size());
         typed.setType(oldType);
         topic.remove();
-        assertEquals(topicCount, _tm.getTopics().size());
+        Assert.assertEquals(topicCount, _tm.getTopics().size());
     }
 
     /**
@@ -62,19 +60,19 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     private void _testScoped(Scoped scoped) {
         final int topicCount = _tm.getTopics().size();
         final Topic topic = createTopic();
-        assertEquals(topicCount+1, _tm.getTopics().size());
+        Assert.assertEquals(topicCount+1, _tm.getTopics().size());
         scoped.addTheme(topic);
         try {
             topic.remove();
-            fail("The topic is used as theme");
+            Assert.fail("The topic is used as theme");
         }
         catch (TopicInUseException ex) {
-            assertEquals(topic, ex.getReporter());
+            Assert.assertEquals(topic, ex.getReporter());
         }
-        assertEquals(topicCount+1, _tm.getTopics().size());
+        Assert.assertEquals(topicCount+1, _tm.getTopics().size());
         scoped.removeTheme(topic);
         topic.remove();
-        assertEquals(topicCount, _tm.getTopics().size());
+        Assert.assertEquals(topicCount, _tm.getTopics().size());
     }
 
     /**
@@ -84,27 +82,28 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
      * @param reifiable A {@link Reifiable} that is not reified.
      */
     private void _testReifiable(Reifiable reifiable) {
-        assertNull(reifiable.getReifier());
+        Assert.assertNull(reifiable.getReifier());
         final int topicCount = _tm.getTopics().size();
         final Topic topic = createTopic();
-        assertEquals(topicCount+1, _tm.getTopics().size());
+        Assert.assertEquals(topicCount+1, _tm.getTopics().size());
         reifiable.setReifier(topic);
         try {
             topic.remove();
-            fail("The topic is used as reifier");
+            Assert.fail("The topic is used as reifier");
         }
         catch (TopicInUseException ex) {
-            assertEquals(topic, ex.getReporter());
+            Assert.assertEquals(topic, ex.getReporter());
         }
-        assertEquals(topicCount+1, _tm.getTopics().size());
+        Assert.assertEquals(topicCount+1, _tm.getTopics().size());
         reifiable.setReifier(null);
         topic.remove();
-        assertEquals(topicCount, _tm.getTopics().size());
+        Assert.assertEquals(topicCount, _tm.getTopics().size());
     }
 
     /**
      * Topic map reifier test.
      */
+    @Test
     public void testUsedAsTopicMapReifier() {
         _testReifiable(_tm);
     }
@@ -112,6 +111,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Association type test.
      */
+    @Test
     public void testUsedAsAssociationType() {
         _testTyped(createAssociation());
     }
@@ -119,6 +119,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Association theme test.
      */
+    @Test
     public void testUsedAsAssociationTheme() {
         _testScoped(createAssociation());
     }
@@ -126,6 +127,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Association reifier test.
      */
+    @Test
     public void testUsedAsAssociationReifier() {
         _testReifiable(createAssociation());
     }
@@ -133,6 +135,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Role type test.
      */
+    @Test
     public void testUsedAsRoleType() {
         _testTyped(createRole());
     }
@@ -140,6 +143,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Role reifier test.
      */
+    @Test
     public void testUsedAsRoleReifier() {
         _testReifiable(createRole());
     }
@@ -147,6 +151,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Occurrence type test.
      */
+    @Test
     public void testUsedAsOccurrenceType() {
         _testTyped(createOccurrence());
     }
@@ -154,6 +159,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Occurrence theme test.
      */
+    @Test
     public void testUsedAsOccurrenceTheme() {
         _testScoped(createOccurrence());
     }
@@ -161,6 +167,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Occurrence reifier test.
      */
+    @Test
     public void testUsedAsOccurrenceReifier() {
         _testReifiable(createOccurrence());
     }
@@ -168,6 +175,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Name type test.
      */
+    @Test
     public void testUsedAsNameType() {
         _testTyped(createName());
     }
@@ -175,6 +183,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Name theme test.
      */
+    @Test
     public void testUsedAsNameTheme() {
         _testScoped(createName());
     }
@@ -182,6 +191,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Name reifier test.
      */
+    @Test
     public void testUsedAsNameReifier() {
         _testReifiable(createName());
     }
@@ -189,6 +199,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Variant theme test.
      */
+    @Test
     public void testUsedAsVariantTheme() {
         _testScoped(createVariant());
     }
@@ -196,6 +207,7 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
     /**
      * Variant reifier test.
      */
+    @Test
     public void testUsedAsVariantReifier() {
         _testReifiable(createVariant());
     }
@@ -204,50 +216,52 @@ public class TestTopicRemovableConstraint extends TMAPITestCase {
      * Tests if the removable constraint is respected if a topic is 
      * used as topic type.
      */
+    @Test
     public void testUsedAsTopicType() {
         Topic topic = createTopic();
         Topic topic2 = createTopic();
-        assertEquals(2, _tm.getTopics().size());
+        Assert.assertEquals(2, _tm.getTopics().size());
         topic2.addType(topic);
         try {
             topic.remove();
-            fail("The topic is used as topic type");
+            Assert.fail("The topic is used as topic type");
         }
         catch (TopicInUseException ex) {
-            assertEquals(topic, ex.getReporter());
+            Assert.assertEquals(topic, ex.getReporter());
         }
-        assertEquals(2, _tm.getTopics().size());
+        Assert.assertEquals(2, _tm.getTopics().size());
         topic2.removeType(topic);
         topic.remove();
-        assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
     }
 
     /**
      * Tests if the removable constraint is respected if a topic is 
      * used as player.
      */
+    @Test
     public void testUsedAsPlayer() {
         Topic topic = createTopic();
-        assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
         topic.remove();
-        assertEquals(0, _tm.getTopics().size());
+        Assert.assertEquals(0, _tm.getTopics().size());
         topic = createTopic();
-        assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
         Association assoc = createAssociation();
-        assertEquals(2, _tm.getTopics().size());
+        Assert.assertEquals(2, _tm.getTopics().size());
         Role role = assoc.createRole(_tm.createTopic(), topic);
-        assertEquals(3, _tm.getTopics().size());
+        Assert.assertEquals(3, _tm.getTopics().size());
         try {
             topic.remove();
-            fail("The topic is used as player");
+            Assert.fail("The topic is used as player");
         }
         catch (TopicInUseException ex) {
-            assertEquals(topic, ex.getReporter());
+            Assert.assertEquals(topic, ex.getReporter());
         }
         role.setPlayer(createTopic());
-        assertEquals(4, _tm.getTopics().size());
+        Assert.assertEquals(4, _tm.getTopics().size());
         topic.remove();
-        assertEquals(3, _tm.getTopics().size());
+        Assert.assertEquals(3, _tm.getTopics().size());
     }
 
 }

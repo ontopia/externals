@@ -13,9 +13,10 @@
  */
 package org.tmapi.core;
 
-import org.tmapi.core.Locator;
-import org.tmapi.core.Topic;
-import org.tmapi.core.TopicMap;
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Tests merging of topic maps.
@@ -30,24 +31,16 @@ public class TestTopicMapMerge extends TMAPITestCase {
 
     private TopicMap _tm2;
 
-    public TestTopicMapMerge(String name) {
-        super(name);
-    }
-
-    /* (non-Javadoc)
-     * @see org.tmapi.core.TMAPITestCase#setUp()
-     */
+    @Before
     @Override
-    protected void setUp() throws Exception {
+    public void setUp() throws Exception {
         super.setUp();
         _tm2 = createTopicMap(_TM2_BASE);
     }
 
-    /* (non-Javadoc)
-     * @see org.tinytim.TinyTimTestCase#tearDown()
-     */
+    @After
     @Override
-    protected void tearDown() throws Exception {
+    public void tearDown() throws Exception {
         super.tearDown();
         _tm2 = null;
     }
@@ -58,174 +51,181 @@ public class TestTopicMapMerge extends TMAPITestCase {
      * 
      * @throws Exception In case of an error.
      */
+    @Test
     public void testTopicMergeNoop() throws Exception {
         Locator loc = createLocator("http://www.tmapi.org/test/tm-merge-noop");
         TopicMap tm = _sys.createTopicMap(loc);
-        assertEquals(tm, _sys.getTopicMap(loc));
+        Assert.assertEquals(tm, _sys.getTopicMap(loc));
         tm.mergeIn(_sys.getTopicMap(loc));
-        assertEquals(tm, _sys.getTopicMap(loc));
+        Assert.assertEquals(tm, _sys.getTopicMap(loc));
     }
 
     /**
      * Tests merging of topics by equal item identifiers.
      */
+    @Test
     public void testMergeByItemIdentifier() {
         final String ref = "http://sf.net/projects/tinytim/loc";
         Locator iidA = _tm.createLocator(ref);
         Topic topicA = _tm.createTopicByItemIdentifier(iidA);
         Locator iidB = _tm2.createLocator(ref);
         Topic topicB = _tm2.createTopicByItemIdentifier(iidB);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
 
         _tm.mergeIn(_tm2);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(topicA, _tm.getConstructByItemIdentifier(iidA));
-        assertEquals(1, topicA.getItemIdentifiers().size());
-        assertEquals(iidA, topicA.getItemIdentifiers().iterator().next());
-        assertEquals(0, topicA.getSubjectIdentifiers().size());
-        assertEquals(0, topicA.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(topicA, _tm.getConstructByItemIdentifier(iidA));
+        Assert.assertEquals(1, topicA.getItemIdentifiers().size());
+        Assert.assertEquals(iidA, topicA.getItemIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicA.getSubjectIdentifiers().size());
+        Assert.assertEquals(0, topicA.getSubjectLocators().size());
 
         // MergeIn must not have any side effects on tm2
-        assertEquals(1, _tm2.getTopics().size());
-        assertEquals(topicB, _tm2.getConstructByItemIdentifier(iidB));
-        assertEquals(1, topicB.getItemIdentifiers().size());
-        assertEquals(iidB, topicB.getItemIdentifiers().iterator().next());
-        assertEquals(0, topicB.getSubjectIdentifiers().size());
-        assertEquals(0, topicB.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(topicB, _tm2.getConstructByItemIdentifier(iidB));
+        Assert.assertEquals(1, topicB.getItemIdentifiers().size());
+        Assert.assertEquals(iidB, topicB.getItemIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicB.getSubjectIdentifiers().size());
+        Assert.assertEquals(0, topicB.getSubjectLocators().size());
     }
 
     /**
      * Tests merging of topics by equal subject identifiers.
      */
+    @Test
     public void testMergeBySubjectIdentifier() {
         final String ref = "http://sf.net/projects/tinytim/loc";
         Locator sidA = _tm.createLocator(ref);
         Topic topicA = _tm.createTopicBySubjectIdentifier(sidA);
         Locator sidB = _tm2.createLocator(ref);
         Topic topicB = _tm2.createTopicBySubjectIdentifier(sidB);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
 
         _tm.mergeIn(_tm2);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(topicA, _tm.getTopicBySubjectIdentifier(sidA));
-        assertEquals(1, topicA.getSubjectIdentifiers().size());
-        assertEquals(sidA, topicA.getSubjectIdentifiers().iterator().next());
-        assertEquals(0, topicA.getItemIdentifiers().size());
-        assertEquals(0, topicA.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(topicA, _tm.getTopicBySubjectIdentifier(sidA));
+        Assert.assertEquals(1, topicA.getSubjectIdentifiers().size());
+        Assert.assertEquals(sidA, topicA.getSubjectIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicA.getItemIdentifiers().size());
+        Assert.assertEquals(0, topicA.getSubjectLocators().size());
 
         // MergeIn must not have any side effects on tm2
-        assertEquals(1, _tm2.getTopics().size());
-        assertEquals(topicB, _tm2.getTopicBySubjectIdentifier(sidB));
-        assertEquals(1, topicB.getSubjectIdentifiers().size());
-        assertEquals(sidB, topicB.getSubjectIdentifiers().iterator().next());
-        assertEquals(0, topicB.getItemIdentifiers().size());
-        assertEquals(0, topicB.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(topicB, _tm2.getTopicBySubjectIdentifier(sidB));
+        Assert.assertEquals(1, topicB.getSubjectIdentifiers().size());
+        Assert.assertEquals(sidB, topicB.getSubjectIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicB.getItemIdentifiers().size());
+        Assert.assertEquals(0, topicB.getSubjectLocators().size());
     }
 
     /**
      * Tests merging of topics by equal subject locators.
      */
+    @Test
     public void testMergeBySubjectLocator() {
         final String ref = "http://sf.net/projects/tinytim/loc";
         Locator sloA = _tm.createLocator(ref);
         Topic topicA = _tm.createTopicBySubjectLocator(sloA);
         Locator sloB = _tm2.createLocator(ref);
         Topic topicB = _tm2.createTopicBySubjectLocator(sloB);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
 
         _tm.mergeIn(_tm2);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(topicA, _tm.getTopicBySubjectLocator(sloA));
-        assertEquals(1, topicA.getSubjectLocators().size());
-        assertEquals(sloA, topicA.getSubjectLocators().iterator().next());
-        assertEquals(0, topicA.getItemIdentifiers().size());
-        assertEquals(0, topicA.getSubjectIdentifiers().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(topicA, _tm.getTopicBySubjectLocator(sloA));
+        Assert.assertEquals(1, topicA.getSubjectLocators().size());
+        Assert.assertEquals(sloA, topicA.getSubjectLocators().iterator().next());
+        Assert.assertEquals(0, topicA.getItemIdentifiers().size());
+        Assert.assertEquals(0, topicA.getSubjectIdentifiers().size());
 
         // MergeIn must not have any side effects on tm2
-        assertEquals(1, _tm2.getTopics().size());
-        assertEquals(topicB, _tm2.getTopicBySubjectLocator(sloB));
-        assertEquals(1, topicB.getSubjectLocators().size());
-        assertEquals(sloB, topicB.getSubjectLocators().iterator().next());
-        assertEquals(0, topicB.getItemIdentifiers().size());
-        assertEquals(0, topicB.getSubjectIdentifiers().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(topicB, _tm2.getTopicBySubjectLocator(sloB));
+        Assert.assertEquals(1, topicB.getSubjectLocators().size());
+        Assert.assertEquals(sloB, topicB.getSubjectLocators().iterator().next());
+        Assert.assertEquals(0, topicB.getItemIdentifiers().size());
+        Assert.assertEquals(0, topicB.getSubjectIdentifiers().size());
     }
 
     /**
      * Tests merging of topics by existing topic with item identifier equals
      * to a topic's subject identifier from the other map.
      */
+    @Test
     public void testMergeItemIdentifierEqSubjectIdentifier() {
         final String ref = "http://sf.net/projects/tinytim/loc";
         Locator locA = _tm.createLocator(ref);
         Topic topicA = _tm.createTopicByItemIdentifier(locA);
         Locator locB = _tm2.createLocator(ref);
         Topic topicB = _tm2.createTopicBySubjectIdentifier(locB);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(1, _tm2.getTopics().size());
-        assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
-        assertNull(_tm.getTopicBySubjectIdentifier(locA));
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
+        Assert.assertNull(_tm.getTopicBySubjectIdentifier(locA));
 
         _tm.mergeIn(_tm2);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
-        assertEquals(topicA, _tm.getTopicBySubjectIdentifier(locA));
-        assertEquals(1, topicA.getSubjectIdentifiers().size());
-        assertEquals(locA, topicA.getSubjectIdentifiers().iterator().next());
-        assertEquals(1, topicA.getItemIdentifiers().size());
-        assertEquals(locA, topicA.getItemIdentifiers().iterator().next());
-        assertEquals(0, topicA.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
+        Assert.assertEquals(topicA, _tm.getTopicBySubjectIdentifier(locA));
+        Assert.assertEquals(1, topicA.getSubjectIdentifiers().size());
+        Assert.assertEquals(locA, topicA.getSubjectIdentifiers().iterator().next());
+        Assert.assertEquals(1, topicA.getItemIdentifiers().size());
+        Assert.assertEquals(locA, topicA.getItemIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicA.getSubjectLocators().size());
 
         // No side effects on tm2
-        assertEquals(1, _tm2.getTopics().size());
-        assertNull(_tm2.getConstructByItemIdentifier(locB));
-        assertEquals(topicB, _tm2.getTopicBySubjectIdentifier(locB));
-        assertEquals(1, topicB.getSubjectIdentifiers().size());
-        assertEquals(locB, topicB.getSubjectIdentifiers().iterator().next());
-        assertEquals(0, topicB.getItemIdentifiers().size());
-        assertEquals(0, topicA.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertNull(_tm2.getConstructByItemIdentifier(locB));
+        Assert.assertEquals(topicB, _tm2.getTopicBySubjectIdentifier(locB));
+        Assert.assertEquals(1, topicB.getSubjectIdentifiers().size());
+        Assert.assertEquals(locB, topicB.getSubjectIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicB.getItemIdentifiers().size());
+        Assert.assertEquals(0, topicA.getSubjectLocators().size());
     }
 
     /**
      * Tests merging of topics by existing topic with subject identifier equals
      * to a topic's item identifier from the other map.
      */
+    @Test
     public void testMergeSubjectIdentifierEqItemIdentifier() {
         final String ref = "http://sf.net/projects/tinytim/loc";
         Locator locA = _tm.createLocator(ref);
         Topic topicA = _tm.createTopicBySubjectIdentifier(locA);
         Locator locB = _tm2.createLocator(ref);
         Topic topicB = _tm2.createTopicByItemIdentifier(locB);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(1, _tm2.getTopics().size());
-        assertNull(_tm.getConstructByItemIdentifier(locA));
-        assertEquals(topicA, _tm.getTopicBySubjectIdentifier(locA));
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertNull(_tm.getConstructByItemIdentifier(locA));
+        Assert.assertEquals(topicA, _tm.getTopicBySubjectIdentifier(locA));
         
         _tm.mergeIn(_tm2);
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
-        assertEquals(topicA, _tm.getTopicBySubjectIdentifier(locA));
-        assertEquals(1, topicA.getSubjectIdentifiers().size());
-        assertEquals(locA, topicA.getSubjectIdentifiers().iterator().next());
-        assertEquals(1, topicA.getItemIdentifiers().size());
-        assertEquals(locA, topicA.getItemIdentifiers().iterator().next());
-        assertEquals(0, topicA.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
+        Assert.assertEquals(topicA, _tm.getTopicBySubjectIdentifier(locA));
+        Assert.assertEquals(1, topicA.getSubjectIdentifiers().size());
+        Assert.assertEquals(locA, topicA.getSubjectIdentifiers().iterator().next());
+        Assert.assertEquals(1, topicA.getItemIdentifiers().size());
+        Assert.assertEquals(locA, topicA.getItemIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicA.getSubjectLocators().size());
         
         // No side effects on tm2
-        assertEquals(1, _tm2.getTopics().size());
-        assertNull(_tm2.getTopicBySubjectIdentifier(locB));
-        assertEquals(topicB, _tm2.getConstructByItemIdentifier(locB));
-        assertEquals(1, topicB.getItemIdentifiers().size());
-        assertEquals(locB, topicB.getItemIdentifiers().iterator().next());
-        assertEquals(0, topicB.getSubjectIdentifiers().size());
-        assertEquals(0, topicA.getSubjectLocators().size());
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertNull(_tm2.getTopicBySubjectIdentifier(locB));
+        Assert.assertEquals(topicB, _tm2.getConstructByItemIdentifier(locB));
+        Assert.assertEquals(1, topicB.getItemIdentifiers().size());
+        Assert.assertEquals(locB, topicB.getItemIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicB.getSubjectIdentifiers().size());
+        Assert.assertEquals(0, topicA.getSubjectLocators().size());
     }
 
     /**
      * Tests if topics are added to a topic map from another topic map.
      */
+    @Test
     public void testAddTopicsFromOtherMap() {
         final String refA = "http://www.tmapi.org/#iid-A";
         final String refB = "http://www.tmapi.org/#iid-B";
@@ -234,28 +234,28 @@ public class TestTopicMapMerge extends TMAPITestCase {
         final Locator locB = _tm2.createLocator(refB);
         final Topic topicB = _tm2.createTopicByItemIdentifier(locB);
         // Check tm 
-        assertEquals(1, _tm.getTopics().size());
-        assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
-        assertNull(_tm.getConstructByItemIdentifier(locB));
+        Assert.assertEquals(1, _tm.getTopics().size());
+        Assert.assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
+        Assert.assertNull(_tm.getConstructByItemIdentifier(locB));
         // Check tm2
-        assertEquals(1, _tm2.getTopics().size());
-        assertEquals(topicB, _tm2.getConstructByItemIdentifier(locB));
-        assertNull(_tm2.getConstructByItemIdentifier(locA));
+        Assert.assertEquals(1, _tm2.getTopics().size());
+        Assert.assertEquals(topicB, _tm2.getConstructByItemIdentifier(locB));
+        Assert.assertNull(_tm2.getConstructByItemIdentifier(locA));
         _tm.mergeIn(_tm2);
-        assertEquals(2, _tm.getTopics().size());
+        Assert.assertEquals(2, _tm.getTopics().size());
         // Check if topicA is unchanged
-        assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
-        assertEquals(1, topicA.getItemIdentifiers().size());
-        assertEquals(locA, topicA.getItemIdentifiers().iterator().next());
-        assertEquals(0, topicA.getSubjectIdentifiers().size());
-        assertEquals(0, topicA.getSubjectLocators().size());
+        Assert.assertEquals(topicA, _tm.getConstructByItemIdentifier(locA));
+        Assert.assertEquals(1, topicA.getItemIdentifiers().size());
+        Assert.assertEquals(locA, topicA.getItemIdentifiers().iterator().next());
+        Assert.assertEquals(0, topicA.getSubjectIdentifiers().size());
+        Assert.assertEquals(0, topicA.getSubjectLocators().size());
         // Check the new topic (which is topicB in tm2)
         final Topic newTopic = (Topic) _tm.getConstructByItemIdentifier(locB);
-        assertNotNull(newTopic);
-        assertEquals(1, newTopic.getItemIdentifiers().size());
-        assertEquals(locB, newTopic.getItemIdentifiers().iterator().next());
-        assertEquals(0, newTopic.getSubjectIdentifiers().size());
-        assertEquals(0, newTopic.getSubjectLocators().size());
+        Assert.assertNotNull(newTopic);
+        Assert.assertEquals(1, newTopic.getItemIdentifiers().size());
+        Assert.assertEquals(locB, newTopic.getItemIdentifiers().iterator().next());
+        Assert.assertEquals(0, newTopic.getSubjectIdentifiers().size());
+        Assert.assertEquals(0, newTopic.getSubjectLocators().size());
     }
 
 }

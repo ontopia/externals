@@ -13,6 +13,9 @@
  */
 package org.tmapi.core;
 
+import org.junit.Assert;
+import org.junit.Test;
+
 /**
  * Tests against the {@link Scoped} interface.
  * 
@@ -22,10 +25,6 @@ package org.tmapi.core;
  */
 public class TestScoped extends TMAPITestCase {
 
-    public TestScoped(String name) {
-        super(name);
-    }
-
     /**
      * Tests adding / removing themes.
      *
@@ -33,30 +32,30 @@ public class TestScoped extends TMAPITestCase {
      */
     private void _testScoped(final Scoped scoped) {
         int scopeSize = (scoped instanceof Variant) ? scoped.getScope().size() : 0;
-        assertEquals(scopeSize, scoped.getScope().size());
+        Assert.assertEquals(scopeSize, scoped.getScope().size());
         final Topic theme1 = createTopic();
         scoped.addTheme(theme1);
         scopeSize++;
-        assertEquals(scopeSize, scoped.getScope().size());
-        assertTrue(scoped.getScope().contains(theme1));
+        Assert.assertEquals(scopeSize, scoped.getScope().size());
+        Assert.assertTrue(scoped.getScope().contains(theme1));
         final Topic theme2 = createTopic();
-        assertFalse(scoped.getScope().contains(theme2));
+        Assert.assertFalse(scoped.getScope().contains(theme2));
         scoped.addTheme(theme2);
         scopeSize++;
-        assertEquals(scopeSize, scoped.getScope().size());
-        assertTrue(scoped.getScope().contains(theme1));
-        assertTrue(scoped.getScope().contains(theme2));
+        Assert.assertEquals(scopeSize, scoped.getScope().size());
+        Assert.assertTrue(scoped.getScope().contains(theme1));
+        Assert.assertTrue(scoped.getScope().contains(theme2));
         scoped.removeTheme(theme2);
         scopeSize--;
-        assertEquals(scopeSize, scoped.getScope().size());
-        assertTrue(scoped.getScope().contains(theme1));
-        assertFalse(scoped.getScope().contains(theme2));
+        Assert.assertEquals(scopeSize, scoped.getScope().size());
+        Assert.assertTrue(scoped.getScope().contains(theme1));
+        Assert.assertFalse(scoped.getScope().contains(theme2));
         scoped.removeTheme(theme1);
         scopeSize--;
-        assertEquals(scopeSize, scoped.getScope().size());
+        Assert.assertEquals(scopeSize, scoped.getScope().size());
         try {
             scoped.addTheme(null);
-            fail("addTheme(null) is illegal");
+            Assert.fail("addTheme(null) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
@@ -66,6 +65,7 @@ public class TestScoped extends TMAPITestCase {
     /**
      * Tests against an association.
      */
+    @Test
     public void testAssociation() {
         _testScoped(createAssociation());
     }
@@ -73,6 +73,7 @@ public class TestScoped extends TMAPITestCase {
     /**
      * Tests against an occurrence.
      */
+    @Test
     public void testOccurrence() {
         _testScoped(createOccurrence());
     }
@@ -80,6 +81,7 @@ public class TestScoped extends TMAPITestCase {
     /**
      * Tests against a name.
      */
+    @Test
     public void testName() {
         _testScoped(createName());
     }
@@ -87,6 +89,7 @@ public class TestScoped extends TMAPITestCase {
     /**
      * Tests against a variant.
      */
+    @Test
     public void testVariant() {
         _testScoped(createVariant());
     }

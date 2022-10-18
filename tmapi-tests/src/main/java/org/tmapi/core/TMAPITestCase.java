@@ -15,8 +15,8 @@ package org.tmapi.core;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
+import org.junit.After;
+import org.junit.Before;
 
 /**
  * This TestClass is the base of all TMAPI test classes. 
@@ -36,7 +36,7 @@ import junit.framework.TestCase;
  * @author <a href="http://tmapi.org/">The TMAPI Project</a>
  * @version $Rev: 66 $ - $Date: 2008-08-20 11:26:30 +0000 (Wed, 20 Aug 2008) $
  */
-public class TMAPITestCase extends TestCase {
+public class TMAPITestCase {
 
     /**
      * Default address under which the initial topic map is stored.
@@ -58,16 +58,8 @@ public class TMAPITestCase extends TestCase {
      */
     protected TopicMap _tm;
 
-    public TMAPITestCase(String name) {
-        super(name);
-    }
-
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#setUp()
-     */
-    @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    @Before
+    public void setUp() throws Exception {
         TopicMapSystemFactory factory = TopicMapSystemFactory.newInstance();
         //bad hack to copy all System.Properties to factory
         for (Object obj: System.getProperties().keySet()) {
@@ -80,12 +72,8 @@ public class TMAPITestCase extends TestCase {
         _tm = _sys.createTopicMap(_defaultLocator);
     }
 
-    /* (non-Javadoc)
-     * @see junit.framework.TestCase#tearDown()
-     */
-    @Override
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    @After
+    public void tearDown() throws Exception {
         removeAllMaps();
         _sys.close();
     }

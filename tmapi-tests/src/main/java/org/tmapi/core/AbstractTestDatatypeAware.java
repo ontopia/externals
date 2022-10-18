@@ -15,6 +15,9 @@ package org.tmapi.core;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 /**
  * Abstract test against the {@link DatatypeAware} interface.
@@ -42,10 +45,6 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     protected Locator _xsdLong;
     protected Locator _xsdAnyURI;
 
-    public AbstractTestDatatypeAware(String name) {
-        super(name);
-    }
-
     /**
      * Returns a {@link DatatypeAware} instance to run the tests against.
      *
@@ -56,9 +55,9 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     /* (non-Javadoc)
      * @see org.tmapi.core.TMAPITestCase#setUp()
      */
+    @Before
     @Override
-    protected void setUp() throws Exception {
-        super.setUp();
+    public void setUp() throws Exception {
         _xsdString = createLocator(_XSD_STRING);
         _xsdInteger = createLocator(_XSD_INTEGER);
         _xsdInt = createLocator(_XSD_INT);
@@ -68,12 +67,13 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         _xsdAnyURI = createLocator(_XSD_ANY_URI);
     }
 
+    @Test
     public void testString() {
         final DatatypeAware dt = getDatatypeAware();
         final String value = "a string";
         dt.setValue(value);
-        assertEquals(value, dt.getValue());
-        assertEquals(_xsdString, dt.getDatatype());
+        Assert.assertEquals(value, dt.getValue());
+        Assert.assertEquals(_xsdString, dt.getDatatype());
         assertFailInteger(dt);
         assertFailInt(dt);
         assertFailFloat(dt);
@@ -81,12 +81,13 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         assertFailDecimal(dt);
     }
 
+    @Test
     public void testStringExplicit() {
         final DatatypeAware dt = getDatatypeAware();
         final String value = "a string";
         dt.setValue(value, _xsdString);
-        assertEquals(value, dt.getValue());
-        assertEquals(_xsdString, dt.getDatatype());
+        Assert.assertEquals(value, dt.getValue());
+        Assert.assertEquals(_xsdString, dt.getDatatype());
         assertFailInteger(dt);
         assertFailInt(dt);
         assertFailFloat(dt);
@@ -94,14 +95,15 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         assertFailDecimal(dt);
     }
 
+    @Test
     public void testURI() {
         final DatatypeAware dt = getDatatypeAware();
         final String iri = "http://www.example.org/";
         final Locator value = createLocator(iri);
         dt.setValue(value);
-        assertEquals(iri, dt.getValue());
-        assertEquals(_xsdAnyURI, dt.getDatatype());
-        assertEquals(value, dt.locatorValue());
+        Assert.assertEquals(iri, dt.getValue());
+        Assert.assertEquals(_xsdAnyURI, dt.getDatatype());
+        Assert.assertEquals(value, dt.locatorValue());
         assertFailInteger(dt);
         assertFailInt(dt);
         assertFailFloat(dt);
@@ -109,14 +111,15 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         assertFailDecimal(dt);
     }
 
+    @Test
     public void testURIExplicit() {
         final DatatypeAware dt = getDatatypeAware();
         final String iri = "http://www.example.org/";
         final Locator value = createLocator(iri);
         dt.setValue(iri, _xsdAnyURI);
-        assertEquals(iri, dt.getValue());
-        assertEquals(_xsdAnyURI, dt.getDatatype());
-        assertEquals(value, dt.locatorValue());
+        Assert.assertEquals(iri, dt.getValue());
+        Assert.assertEquals(_xsdAnyURI, dt.getDatatype());
+        Assert.assertEquals(value, dt.locatorValue());
         assertFailInteger(dt);
         assertFailInt(dt);
         assertFailFloat(dt);
@@ -125,121 +128,129 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     }
 
     @SuppressWarnings("boxing")
+    @Test
     public void testInteger() {
         final BigInteger value = BigInteger.TEN;
         final DatatypeAware dt = getDatatypeAware(); 
         dt.setValue(value);
-        assertEquals(value.toString(), dt.getValue());
-        assertEquals(_xsdInteger, dt.getDatatype());
-        assertEquals(value, dt.integerValue());
-        assertEquals(BigDecimal.TEN, dt.decimalValue());
-        assertEquals(10L, dt.longValue());
-        assertEquals(10, dt.intValue());
-        assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(value.toString(), dt.getValue());
+        Assert.assertEquals(_xsdInteger, dt.getDatatype());
+        Assert.assertEquals(value, dt.integerValue());
+        Assert.assertEquals(BigDecimal.TEN, dt.decimalValue());
+        Assert.assertEquals(10L, dt.longValue());
+        Assert.assertEquals(10, dt.intValue());
+        Assert.assertEquals(10.0F, dt.floatValue());
     }
 
     @SuppressWarnings("boxing")
+    @Test
     public void testIntegerExplicit() {
         final BigInteger value = BigInteger.TEN;
         final DatatypeAware dt = getDatatypeAware();
         dt.setValue(value.toString(), _xsdInteger);
-        assertEquals(value.toString(), dt.getValue());
-        assertEquals(_xsdInteger, dt.getDatatype());
-        assertEquals(value, dt.integerValue());
-        assertEquals(BigDecimal.TEN, dt.decimalValue());
-        assertEquals(10L, dt.longValue());
-        assertEquals(10, dt.intValue());
-        assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(value.toString(), dt.getValue());
+        Assert.assertEquals(_xsdInteger, dt.getDatatype());
+        Assert.assertEquals(value, dt.integerValue());
+        Assert.assertEquals(BigDecimal.TEN, dt.decimalValue());
+        Assert.assertEquals(10L, dt.longValue());
+        Assert.assertEquals(10, dt.intValue());
+        Assert.assertEquals(10.0F, dt.floatValue());
     }
 
     @SuppressWarnings("boxing")
+    @Test
     public void testDecimal() {
         final BigDecimal value = BigDecimal.TEN;
         final DatatypeAware dt = getDatatypeAware(); 
         dt.setValue(value);
         final String val = dt.getValue();
-        assertTrue("Expected either '10' or the canonical representation '10.0'",
+        Assert.assertTrue("Expected either '10' or the canonical representation '10.0'",
                 "10".equals(val) || "10.0".equals(val));
-        assertEquals(_xsdDecimal, dt.getDatatype());
-        assertEquals(value, dt.decimalValue());
-        assertEquals(BigInteger.TEN, dt.integerValue());
-        assertEquals(10L, dt.longValue());
-        assertEquals(10, dt.intValue());
-        assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(_xsdDecimal, dt.getDatatype());
+        Assert.assertEquals(value, dt.decimalValue());
+        Assert.assertEquals(BigInteger.TEN, dt.integerValue());
+        Assert.assertEquals(10L, dt.longValue());
+        Assert.assertEquals(10, dt.intValue());
+        Assert.assertEquals(10.0F, dt.floatValue());
     }
 
     @SuppressWarnings("boxing")
+    @Test
     public void testDecimalExplicit() {
         final BigDecimal value = BigDecimal.TEN;
         final DatatypeAware dt = getDatatypeAware();
         dt.setValue(value.toString(), _xsdDecimal);
         final String val = dt.getValue();
-        assertTrue("Expected either '10' or the canonical representation '10.0'",
+        Assert.assertTrue("Expected either '10' or the canonical representation '10.0'",
                 "10".equals(val) || "10.0".equals(val));
-        assertEquals(_xsdDecimal, dt.getDatatype());
+        Assert.assertEquals(_xsdDecimal, dt.getDatatype());
         if (!value.equals(dt.decimalValue()) && 
                 !new BigDecimal("10.0").equals(dt.decimalValue())) {
-            fail("Expected either '10' or '10.0' as return value of 'decimalValue()'");
+            Assert.fail("Expected either '10' or '10.0' as return value of 'decimalValue()'");
         }
-        assertEquals(BigInteger.TEN, dt.integerValue());
-        assertEquals(10L, dt.longValue());
-        assertEquals(10, dt.intValue());
-        assertEquals(10.0F, dt.floatValue());
+        Assert.assertEquals(BigInteger.TEN, dt.integerValue());
+        Assert.assertEquals(10L, dt.longValue());
+        Assert.assertEquals(10, dt.intValue());
+        Assert.assertEquals(10.0F, dt.floatValue());
     }
 
     @SuppressWarnings("boxing")
+    @Test
     public void testInt() {
         final int value = 1976;
         final String strValue = "1976";
         final DatatypeAware dt = getDatatypeAware(); 
         dt.setValue(value);
-        assertEquals(strValue, dt.getValue());
-        assertEquals(_xsdInt, dt.getDatatype());
-        assertEquals(new BigDecimal(value), dt.decimalValue());
-        assertEquals(new BigInteger(strValue), dt.integerValue());
-        assertEquals(1976L, dt.longValue());
-        assertEquals(1976, dt.intValue());
-        assertEquals(1976.0F, dt.floatValue());
+        Assert.assertEquals(strValue, dt.getValue());
+        Assert.assertEquals(_xsdInt, dt.getDatatype());
+        Assert.assertEquals(new BigDecimal(value), dt.decimalValue());
+        Assert.assertEquals(new BigInteger(strValue), dt.integerValue());
+        Assert.assertEquals(1976L, dt.longValue());
+        Assert.assertEquals(1976, dt.intValue());
+        Assert.assertEquals(1976.0F, dt.floatValue());
     }
 
     @SuppressWarnings("boxing")
+    @Test
     public void testLong() {
         final long value = 1976L;
         final String strValue = "1976";
         final DatatypeAware dt = getDatatypeAware(); 
         dt.setValue(value);
-        assertEquals(strValue, dt.getValue());
-        assertEquals(_xsdLong, dt.getDatatype());
-        assertEquals(new BigDecimal(value), dt.decimalValue());
-        assertEquals(new BigInteger(strValue), dt.integerValue());
-        assertEquals(value, dt.longValue());
-        assertEquals(1976, dt.intValue());
-        assertEquals(1976.0F, dt.floatValue());
+        Assert.assertEquals(strValue, dt.getValue());
+        Assert.assertEquals(_xsdLong, dt.getDatatype());
+        Assert.assertEquals(new BigDecimal(value), dt.decimalValue());
+        Assert.assertEquals(new BigInteger(strValue), dt.integerValue());
+        Assert.assertEquals(value, dt.longValue());
+        Assert.assertEquals(1976, dt.intValue());
+        Assert.assertEquals(1976.0F, dt.floatValue());
     }
 
     @SuppressWarnings("boxing")
+    @Test
     public void testFloat() {
         final float value = 1976.0F;
         final String strValue = "1976.0";
         final DatatypeAware dt = getDatatypeAware(); 
         dt.setValue(value);
-        assertEquals(strValue, dt.getValue());
-        assertEquals(_xsdFloat, dt.getDatatype());
-        assertTrue("Expected either BigDecimal(1976.0F).equals(dt.decimalValue()) or BigDecimal('1976.0').equals(dt.decimalValue())",
+        Assert.assertEquals(strValue, dt.getValue());
+        Assert.assertEquals(_xsdFloat, dt.getDatatype());
+        Assert.assertTrue("Expected either BigDecimal(1976.0F).equals(dt.decimalValue()) or BigDecimal('1976.0').equals(dt.decimalValue())",
                     new BigDecimal(value).equals(dt.decimalValue()) || new BigDecimal(strValue).equals(dt.decimalValue()));
-        assertEquals(new BigInteger("1976"), dt.integerValue());
-        assertEquals(1976L, dt.longValue());
-        assertEquals(1976, dt.intValue());
-        assertEquals(value, dt.floatValue());
+        Assert.assertEquals(new BigInteger("1976"), dt.integerValue());
+        Assert.assertEquals(1976L, dt.longValue());
+        Assert.assertEquals(1976, dt.intValue());
+        Assert.assertEquals(value, dt.floatValue());
     }
 
+    @Test
     public void testUserDatatype() {
         final Locator datatype = createLocator("http://www.example.org/datatype");
         final DatatypeAware dt = getDatatypeAware();
         final String value = "Value";
         dt.setValue(value, datatype);
-        assertEquals(datatype, dt.getDatatype());
-        assertEquals(value, dt.getValue());
+        Assert.assertEquals(datatype, dt.getDatatype());
+        Assert.assertEquals(value, dt.getValue());
         assertFailInteger(dt);
         assertFailInt(dt);
         assertFailFloat(dt);
@@ -247,66 +258,72 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
         assertFailDecimal(dt);
     }
 
+    @Test
     public void testIllegalDatatype() {
         final DatatypeAware dt = getDatatypeAware();
         try {
             dt.setValue("value", null);
-            fail("datatypeAware.setValue(\"value\", null) is illegal");
+            Assert.fail("datatypeAware.setValue(\"value\", null) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
         }
     }
 
+    @Test
     public void testIllegalStringValue() {
         final DatatypeAware dt = getDatatypeAware();
         try {
             dt.setValue((String)null);
-            fail("datatypeAware.setValue((String)null) is illegal");
+            Assert.fail("datatypeAware.setValue((String)null) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
         }
     }
 
+    @Test
     public void testIllegalStringValueExplicit() {
         final DatatypeAware dt = getDatatypeAware();
         try {
             dt.setValue(null, _xsdString);
-            fail("datatypeAware.setValue(null, datatype) is illegal");
+            Assert.fail("datatypeAware.setValue(null, datatype) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
         }
     }
 
+    @Test
     public void testIllegalLocatorValue() {
         final DatatypeAware dt = getDatatypeAware();
         try {
             dt.setValue((Locator)null);
-            fail("datatypeAware.setValue((Locator)null) is illegal");
+            Assert.fail("datatypeAware.setValue((Locator)null) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
         }
     }
 
+    @Test
     public void testIllegalIntegerValue() {
         final DatatypeAware dt = getDatatypeAware();
         try {
             dt.setValue((BigInteger)null);
-            fail("datatypeAware.setValue((BigInteger)null) is illegal");
+            Assert.fail("datatypeAware.setValue((BigInteger)null) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
         }
     }
 
+    @Test
     public void testIllegalDecimalValue() {
         final DatatypeAware dt = getDatatypeAware();
         try {
             dt.setValue((BigDecimal)null);
-            fail("datatypeAware.setValue((BigDecimal)null) is illegal");
+            Assert.fail("datatypeAware.setValue((BigDecimal)null) is illegal");
         }
         catch (ModelConstraintException ex) {
             // noop.
@@ -316,7 +333,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     protected void assertFailInteger(final DatatypeAware dt) {
         try {
             dt.integerValue();
-            fail("Expected a failure for converting the value to 'BigInteger'");
+            Assert.fail("Expected a Assert.failure for converting the value to 'BigInteger'");
         }
         catch (NumberFormatException ex) {
             // noop.
@@ -326,7 +343,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     protected void assertFailInt(final DatatypeAware dt) {
         try {
             dt.intValue();
-            fail("Expected a failure for converting the value to 'int'");
+            Assert.fail("Expected a Assert.failure for converting the value to 'int'");
         }
         catch (NumberFormatException ex) {
             // noop.
@@ -336,7 +353,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     protected void assertFailFloat(final DatatypeAware dt) {
         try {
             dt.floatValue();
-            fail("Expected a failure for converting the value to 'float'");
+            Assert.fail("Expected a Assert.failure for converting the value to 'float'");
         }
         catch (NumberFormatException ex) {
             // noop.
@@ -346,7 +363,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     protected void assertFailDecimal(final DatatypeAware dt) {
         try {
             dt.decimalValue();
-            fail("Expected a failure for converting the value to 'BigDecimal'");
+            Assert.fail("Expected a Assert.failure for converting the value to 'BigDecimal'");
         }
         catch (NumberFormatException ex) {
             // noop.
@@ -356,7 +373,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     protected void assertFailLong(final DatatypeAware dt) {
         try {
             dt.longValue();
-            fail("Expected a failure for converting the value to 'long'");
+            Assert.fail("Expected a Assert.failure for converting the value to 'long'");
         }
         catch (NumberFormatException ex) {
             // noop.
@@ -366,7 +383,7 @@ public abstract class AbstractTestDatatypeAware extends TMAPITestCase {
     protected void assertFailLocator(final DatatypeAware dt) {
         try {
             dt.locatorValue();
-            fail("Expected a failure for converting the value to 'Locator'");
+            Assert.fail("Expected a Assert.failure for converting the value to 'Locator'");
         }
         catch (IllegalArgumentException ex) {
             // noop.

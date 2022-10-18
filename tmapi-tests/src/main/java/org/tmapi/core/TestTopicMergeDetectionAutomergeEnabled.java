@@ -22,10 +22,6 @@ package org.tmapi.core;
  */
 public class TestTopicMergeDetectionAutomergeEnabled extends AbstractTestTopicMergeDetection {
 
-    public TestTopicMergeDetectionAutomergeEnabled(String name) {
-        super(name);
-    }
-
     /* (non-Javadoc)
      * @see org.tmapi.core.TestTopicMergeDetection#getAutomergeEnabled()
      */
