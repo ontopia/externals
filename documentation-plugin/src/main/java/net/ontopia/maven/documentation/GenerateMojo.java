@@ -69,7 +69,7 @@ public class GenerateMojo extends AbstractMojo {
 	}
 	
 	private Collection<File> collectFiles(File root, String[] includes, String[] excludes) {
-		if (!root.exists()) return Collections.emptySet();
+		if (!root.exists()) { return Collections.emptySet(); }
 		DirectoryScanner scanner = new DirectoryScanner();
 		scanner.setBasedir(root);
 		scanner.setIncludes(includes);
